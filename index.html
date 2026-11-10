@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Validador de Gastos Corporativos · Umbro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
 <style>
   :root{--ink:#0F172A;--ink2:#475569;--ink3:#94A3B8;--line:#E2E8F0;--bg:#F4F6F9;--card:#FFFFFF;--acc:#0B3D91;--acc2:#E8EEF9;
     --ok:#15803D;--okb:#E4F4E4;--warn:#B45309;--warnb:#FFF3D1;--bad:#B91C1C;--badb:#FBE0DF;--r:14px}
@@ -179,6 +179,100 @@
   .pmsg{font-size:12.5px;color:var(--ink2);background:#F8FAFC;border-radius:10px;padding:10px 12px}
   .why2{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px}
   select.corrsel{border-color:var(--warn);background:#FFF8E6}
+  /* --- Tema visual v2.1 --- */
+  :root{--acc:#0B3D91;--acc2:#EAF1FD;--navy:#071A3D;--sky:#3BA3FF;--bg:#EEF2F8;--line:#E3E8F0;--r:18px;
+    --sh:0 1px 2px rgba(7,26,61,.06),0 12px 32px -18px rgba(7,26,61,.28)}
+  body{background:var(--bg) radial-gradient(1200px 400px at 85% -120px,#DCE7FA 0,transparent 70%) no-repeat;font-size:14.5px}
+  .disp{font-family:"Barlow Condensed",Inter,sans-serif;letter-spacing:.2px}
+  h2,.login h2,.kpi b,.reint b,.verdict h3{font-family:"Barlow Condensed",Inter,sans-serif;font-weight:700;letter-spacing:.2px}
+  h2{font-size:26px;line-height:1.1}
+  header{background:linear-gradient(100deg,#061533 0%,#0A2A66 55%,#0B3D91 100%);box-shadow:0 6px 24px -14px rgba(0,0,0,.6)}
+  header::after{content:"";display:block;height:3px;background:linear-gradient(90deg,var(--sky),#7CC4FF 40%,transparent)}
+  .logo{background:#fff;color:var(--navy);border-radius:12px;font-family:"Barlow Condensed",sans-serif;font-size:19px;font-weight:800;width:42px;height:42px;
+    box-shadow:inset 0 -3px 0 var(--sky)}
+  .brand h1{font-family:"Barlow Condensed",Inter,sans-serif;font-size:22px;font-weight:700;letter-spacing:.3px}
+  .brand p{color:#A9BDDF}
+  nav{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08)}
+  nav button{color:#D3DEF0}
+  nav button:hover{background:rgba(255,255,255,.08)}
+  nav button[aria-selected="true"]{background:#fff;color:var(--navy);box-shadow:0 4px 12px -6px rgba(0,0,0,.5)}
+  .who{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:4px 4px 4px 12px}
+  .who button{border-radius:99px;padding:6px 12px}
+  .rolepill{background:var(--sky);color:#04122B}
+  main{padding:28px 22px 60px}
+  .card{border:0;box-shadow:var(--sh);border-radius:var(--r);padding:24px}
+  .step{width:26px;height:26px;background:linear-gradient(135deg,var(--acc),var(--sky));font-size:13px}
+  .card > h2{font-size:22px;display:flex;align-items:center}
+  input,select,textarea{border-color:#D5DDEA;border-radius:12px;min-height:42px;transition:border-color .15s,box-shadow .15s}
+  input:focus,select:focus,textarea:focus{outline:0;border-color:var(--acc);box-shadow:0 0 0 4px rgba(59,163,255,.18)}
+  .btn{border-radius:12px;border-color:#D5DDEA;transition:transform .12s,box-shadow .15s,background .15s}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 16px -10px rgba(7,26,61,.5)}
+  .btn.pri{background:linear-gradient(135deg,#0B3D91,#1559C9);border:0;box-shadow:0 8px 20px -10px rgba(11,61,145,.7)}
+  .btn.pri:hover:not(:disabled){background:linear-gradient(135deg,#0A3480,#1250B8)}
+  .btn.ok{background:linear-gradient(135deg,#15803D,#22A055);border:0}
+  .drop{border-radius:16px;border-color:#B9CBE6;background:linear-gradient(180deg,#F7FAFF,#EEF4FE);padding:34px 22px}
+  .drop svg{width:46px;height:46px;padding:10px;border-radius:14px;background:#fff;box-shadow:var(--sh)}
+  .drop:hover{border-color:var(--acc)}
+  .prev img{border-radius:14px}
+  .verdict{border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
+  .verdict .ic{width:50px;height:50px;border-radius:14px;font-size:24px}
+  .verdict h3{font-size:24px}
+  .v-ok{background:linear-gradient(120deg,#E3F6E9,#F2FBF5)}
+  .v-warn{background:linear-gradient(120deg,#FFF1CC,#FFF9E8)}
+  .v-bad{background:linear-gradient(120deg,#FCE1E0,#FEF2F1)}
+  .reint{background:linear-gradient(120deg,#071A3D,#0B3D91);color:#C9D7F0;border:0;border-radius:14px;padding:14px 18px}
+  .reint b{color:#fff;font-size:28px}
+  .fields label.f{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#64748B}
+  .fwrap .fix{border-radius:99px;color:var(--acc);border-color:#C9D7F0;background:#F3F7FE;padding:5px 10px}
+  .fwrap .fix:hover{background:var(--acc);color:#fff}
+  .rules li{background:#F6F8FC;border-radius:12px;padding:10px 12px;border-left:3px solid transparent}
+  .rules li.ok{border-left-color:#86D3A1}.rules li.warn{border-left-color:#F5B83D}.rules li.bad{border-left-color:#EF8A85}.rules li.info{border-left-color:#8DB7F2}
+  .items2{border-radius:12px;overflow:hidden}
+  .items2 th{background:#F6F8FC}
+  .kpis{gap:16px}
+  .kpi{border:0;box-shadow:var(--sh);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
+  .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--acc)}
+  .kpi:nth-child(2)::before{background:var(--ok)}.kpi:nth-child(3)::before{background:#F59E0B}.kpi:nth-child(4)::before{background:var(--bad)}
+  .kpi b{font-size:30px;line-height:1.1}
+  .kpi span{text-transform:uppercase;font-size:11.5px;letter-spacing:.05em}
+  .tw{border:0;box-shadow:var(--sh);border-radius:16px}
+  .t th{background:#F6F8FC;position:sticky;top:0}
+  .t td{padding:12px}
+  .pill{padding:4px 10px}
+  .p-ok{background:#DDF3E5}.p-warn{background:#FFEDC2}.p-bad{background:#FADAD8}
+  .thumb{border-radius:8px;box-shadow:0 4px 10px -6px rgba(0,0,0,.4)}
+  .hb .tr{height:16px;border-radius:99px}
+  .hb .tr b{border-radius:99px;background:linear-gradient(90deg,#0B3D91,var(--sky))}
+  .filters{background:#fff;box-shadow:var(--sh);border-radius:16px;padding:14px 16px}
+  dialog{border-radius:20px}
+  .dlg{padding:26px}
+  .toast{border-radius:99px;background:var(--navy)}
+  /* Pantalla de entrada */
+  .login{max-width:1080px;margin:36px auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:stretch}
+  @media (max-width:900px){.login{grid-template-columns:1fr}}
+  .hero{border-radius:24px;padding:34px;color:#fff;position:relative;overflow:hidden;min-height:420px;display:flex;flex-direction:column;justify-content:flex-end;
+    background:linear-gradient(150deg,#061533 0%,#0A2A66 50%,#0B3D91 100%)}
+  .hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 2px,transparent 2px 26px);opacity:.9}
+  .hero::after{content:"";position:absolute;width:360px;height:360px;right:-120px;top:-120px;border-radius:50%;background:radial-gradient(circle,rgba(59,163,255,.55),transparent 65%)}
+  .hero > *{position:relative;z-index:1}
+  .hero .kick{display:inline-block;align-self:flex-start;background:rgba(59,163,255,.18);border:1px solid rgba(124,196,255,.45);color:#BFE0FF;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:auto}
+  .hero h2{font-size:44px;line-height:1;margin:0 0 12px;color:#fff}
+  .hero p{color:#C3D3EE;margin:0 0 20px;font-size:14.5px;max-width:400px}
+  .hero ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .hero li{display:flex;gap:10px;align-items:center;font-size:13.5px;color:#E3ECFA}
+  .hero li i{font-style:normal;width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.12);font-size:12px}
+  .roles{margin:0;grid-template-columns:1fr;gap:16px}
+  .role{border:0;box-shadow:var(--sh);border-radius:22px;padding:24px;transition:transform .15s,box-shadow .15s}
+  .role:hover{transform:translateY(-2px);box-shadow:0 1px 2px rgba(7,26,61,.06),0 20px 40px -20px rgba(7,26,61,.35)}
+  .role .top2{display:flex;gap:14px;align-items:center}
+  .role .ico{width:50px;height:50px;border-radius:15px;background:linear-gradient(135deg,var(--acc2),#D7E6FD);font-size:24px}
+  .role h3{font-family:"Barlow Condensed",Inter,sans-serif;font-size:24px;font-weight:700}
+  .role .two{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+  .role .two .btn{min-height:42px}
+  .fields .was{text-transform:none;letter-spacing:0;font-size:12px}
+  .fwrap select{appearance:none;-webkit-appearance:none}
+  .acts{display:flex;flex-direction:column;gap:6px;align-items:stretch;min-width:96px}
+  .t td.why{min-width:260px;max-width:380px}
 </style>
 </head>
 <body>
@@ -196,22 +290,24 @@
 <main>
   <!-- ENTRADA: elegir rol -->
   <section class="login" id="v-login">
-    <h2>¿Quién está usando el validador?</h2>
-    <p class="sub">Cada persona ve solo lo que le corresponde: el empleado carga sus gastos y la administración los revisa y define la política.</p>
+    <div class="hero">
+      <span class="kick">Umbro Uruguay</span>
+      <h2>Rendí tus gastos en un minuto.</h2>
+      <p>Sacale una foto al ticket: la IA lo lee, clasifica cada ítem y lo controla contra la política de la empresa.</p>
+      <ul>
+        <li><i>1</i>Subís la foto del comprobante</li>
+        <li><i>2</i>Revisás lo que leyó la IA y corregís si hace falta</li>
+        <li><i>3</i>Administración aprueba y queda todo en la planilla</li>
+      </ul>
+    </div>
     <div class="roles">
       <div class="role">
-        <div class="ico" aria-hidden="true">👤</div>
-        <h3>Soy empleado</h3>
-        <p>Cargá tus comprobantes y seguí el estado de tus gastos.</p>
-        <label class="f">Tu nombre<select id="loginEmp"></select></label>
-        <button class="btn pri" id="btnEmp" type="button">Entrar como empleado</button>
+        <div class="top2"><div class="ico" aria-hidden="true">👤</div><div><h3>Soy empleado</h3><p>Cargá tus comprobantes y seguí el estado de tus gastos.</p></div></div>
+        <div class="two"><label class="f">Tu nombre<select id="loginEmp"></select></label><button class="btn pri" id="btnEmp" type="button">Entrar →</button></div>
       </div>
       <div class="role">
-        <div class="ico" aria-hidden="true">🏢</div>
-        <h3>Administración / Gerencia</h3>
-        <p>Aprobá o rechazá gastos, mirá el historial de cambios y editá la política de gastos.</p>
-        <label class="f">Clave de administración<input id="loginPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label>
-        <button class="btn pri" id="btnAdm" type="button">Entrar a administración</button>
+        <div class="top2"><div class="ico" aria-hidden="true">🏢</div><div><h3>Administración</h3><p>Aprobá gastos, mirá el historial de cambios y definí la política.</p></div></div>
+        <div class="two"><label class="f">Clave de administración<input id="loginPin" type="password" inputmode="numeric" placeholder="••••" autocomplete="off"></label><button class="btn pri" id="btnAdm" type="button">Entrar →</button></div>
         <p class="hint">Clave de la demo: 1234 (se cambia en Políticas).</p>
         <div id="loginMsg"></div>
       </div>
@@ -499,7 +595,7 @@
     const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a >= 0 && b > a) s = s.slice(a, b + 1);
     return JSON.parse(s);
   }
-  async function aiVision(img, signal){
+  async function aiVision(img, signal, model){
     const cats = st.pol.cats.map(c => `- ${c.id}: ${c.nombre}. ${c.desc}`).join('\n');
     const prompt = `Sos un asistente contable de una empresa uruguaya de ropa deportiva. Leé este comprobante (boleta, e-ticket o factura) y devolvé SOLO un JSON, sin texto extra, con esta forma exacta:
 {"es_comprobante": true, "comercio": "", "rubro": "qué tipo de comercio es", "rut": "", "numero": "", "fecha": "YYYY-MM-DD", "moneda": "UYU o USD", "total": 0, "iva": 0, "items": [{"desc": "", "monto": 0, "categoria": "id", "razon": "por qué esa categoría, en pocas palabras"}], "confianza": 0.0}
@@ -509,7 +605,7 @@ Reglas:
 - "categoria" debe ser uno de estos id:
 ${cats}
 - "confianza" entre 0 y 1 según qué tan legible es. Si la imagen no es un comprobante, es_comprobante=false.`;
-    const body = JSON.stringify({model: 'openai', messages: [{role: 'user', content: [{type: 'text', text: prompt}, {type: 'image_url', image_url: {url: img}}]}], seed: Math.floor(Math.random() * 1e9)});
+    const body = JSON.stringify({model: model || 'gemini', messages: [{role: 'user', content: [{type: 'text', text: prompt}, {type: 'image_url', image_url: {url: img}}]}], seed: Math.floor(Math.random() * 1e9)});
     const k = key();
     const url = serverMode ? '/api/chat' : k ? 'https://gen.pollinations.ai/v1/chat/completions' : 'https://text.pollinations.ai/openai';
     const hdr = {'Content-Type': 'application/json'}; if (k && !serverMode) hdr.Authorization = 'Bearer ' + k;
@@ -519,7 +615,7 @@ ${cats}
     if (res.status === 401 || res.status === 403) throw {code: 'clave'};
     if (res.status === 402) throw {code: k ? 'saldo' : 'sinclave'};
     if (res.status === 429) throw {code: 'limite'};
-    if (!res.ok) throw {code: 'red'};
+    if (!res.ok){ let det = ''; try { const t = await res.text(); const j = JSON.parse(t); det = (j.error && (j.error.message || j.error)) || j.message || t; } catch {} throw {code: 'red', status: res.status, det: String(det || '').slice(0, 160)}; }
     const raw = await res.text(); let txt = raw;
     try { const j = JSON.parse(raw); if (j && j.choices && j.choices[0]) txt = j.choices[0].message.content || ''; } catch {}
     try { return parseJSON(txt); } catch { throw {code: 'formato'}; }
@@ -543,16 +639,26 @@ ${cats}
   async function leer(){
     if (!cur) return;
     const b = $('#btnLeer'); b.disabled = true; b.innerHTML = '<span class="spin"></span> La IA está leyendo el comprobante…'; $('#msgLeer').innerHTML = '';
-    const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), 90000);
+    let to = null;
     try {
-      const o = fromAI(await aiVision(cur.img, ctrl.signal));
+      // Primero un modelo rápido; si falla o tarda, se reintenta con otro modelo y la foto más liviana
+      const intentos = [['gemini', 1280, 50000, 'La IA está leyendo el comprobante…'], ['openai', 1000, 60000, 'Probando con otra IA…']];
+      let r = null, ultimo = null;
+      for (const [modelo, px, ms, txt] of intentos){
+        b.innerHTML = '<span class="spin"></span> ' + txt;
+        const ctrl = new AbortController(); to = setTimeout(() => ctrl.abort(), ms);
+        try { r = await aiVision(await shrink(cur.img, px, .82), ctrl.signal, modelo); clearTimeout(to); break; }
+        catch (e1) { clearTimeout(to); ultimo = e1; if (e1 && ['clave', 'saldo', 'sinclave'].includes(e1.code)) break; }
+      }
+      if (!r) throw ultimo;
+      const o = fromAI(r);
       cur.data = Object.assign(blank(), JSON.parse(JSON.stringify(o))); cur.ia = JSON.parse(JSON.stringify(o)); cur.unlock = {}; cur.logged = {}; cur.manualItems = {};
       cur.hist = [{t: ahora(), tipo: 'carga', quien: 'IA', txt: `La IA leyó el comprobante: ${o.comercio || 'comercio sin nombre'}, ${o.items.length} ${o.items.length === 1 ? 'ítem' : 'ítems'}, total ${fmt(o.total, o.moneda)}${o.confianza != null ? ` (confianza ${Math.round(o.confianza * 100)}%)` : ''}`}];
       $('#msgLeer').innerHTML = o.es_comprobante ? '<p class="msg okm">Listo: revisá los datos de la derecha. Si algo está mal, tocá "Corregir".</p>' : '<p class="msg err">La IA dice que la imagen no parece un comprobante. Probá con otra foto.</p>';
     } catch (e) {
       cur.manual = true; cur.ia = null; cur.data = blank(); cur.hist = [{t: ahora(), tipo: 'carga', quien: st.me, txt: 'La IA no pudo leer el comprobante; los datos se cargaron a mano'}];
-      $('#msgLeer').innerHTML = `<p class="msg err">${esc(aiErr(e))} Mientras tanto podés completar los datos a mano a la derecha.</p>`;
-    } finally { clearTimeout(to); b.disabled = false; b.textContent = 'Volver a leer con IA'; }
+      $('#msgLeer').innerHTML = `<p class="msg err">${esc(aiErr(e))} Mientras tanto podés completar los datos a mano a la derecha.${e && (e.status || e.det) ? `<br><small>Detalle técnico: ${esc([e.status ? 'código ' + e.status : '', e.det].filter(Boolean).join(' · '))}</small>` : ''}</p>`;
+    } finally { if (to) clearTimeout(to); b.disabled = false; b.textContent = 'Volver a leer con IA'; }
     validateAndRender(true);
   }
 
@@ -588,7 +694,7 @@ ${cats}
     const sumIt = d.items.reduce((s, i) => s + (Number(i.monto) || 0), 0);
     if (d.items.length && total > 0 && Math.abs(sumIt - total) > Math.max(2, total * .02)) add('warn', 'Los ítems no suman el total', `Ítems: ${fmt(sumIt, d.moneda)} · total: ${fmt(total, d.moneda)}. Puede faltar un ítem o un descuento.`);
     // 5. Duplicado
-    const dup = st.gastos.find(g => g.id !== excluirId && !/^Rechazado/.test(g.estado) && ((rut && d.numero && g.rut === rut && g.numero === d.numero) || (String(g.comercio).toLowerCase() === String(d.comercio).toLowerCase() && g.fecha === d.fecha && Math.abs(g.total - total) < .01)));
+    const dup = st.gastos.find(g => g.id !== excluirId && !/^Rechazado/.test(g.estado) && ((rut && d.numero && g.rut === rut && g.numero === d.numero) || (g.empleado === nombre && String(g.comercio).toLowerCase() === String(d.comercio).toLowerCase() && g.fecha === d.fecha && Math.abs(g.total - total) < .01)));
     if (dup) add('bad', 'Comprobante duplicado', `Ya lo rindió ${dup.empleado} (${dup.id}).`);
     // 6. Reglas por categoría
     const factor = sumIt > 0 && total > 0 ? total / sumIt : 1; // reparte descuentos/redondeos
@@ -640,8 +746,10 @@ ${cats}
     let estado = R.some(r => r.lvl === 'bad') ? 'Rechazado' : R.some(r => r.lvl === 'warn') ? 'Requiere aprobación' : reint <= 0 ? 'Rechazado' : reint < uyu - 1 ? 'Aprobado parcial' : 'Aprobado';
     if (estado === 'Rechazado' && !R.some(r => r.lvl === 'bad')) add('bad', 'Nada para reintegrar', 'Ninguno de los ítems corresponde según la política.');
     if (estado === 'Requiere aprobación' && !nivel) nivel = 'Gerente';
+    if (estado === 'Rechazado'){ itemsR.forEach(i => i.reint = 0); }
+    const reintF = estado === 'Rechazado' ? 0 : reint;
     const porCat = {}; d.items.forEach((it, i) => { porCat[it.cat] = (porCat[it.cat] || 0) + itemsR[i].reint; });
-    return {R, estado, uyu, reint, itemsR, nivel, porCat};
+    return {R, estado, uyu, reint: reintF, itemsR, nivel, porCat};
   }
 
   function validateAndRender(full){
@@ -748,7 +856,7 @@ ${cats}
         <td class="num">${fmt(g.total, g.moneda)}</td><td class="num"><b>${fmt(g.reint)}</b></td>
         <td>${pill(g.estado)}${g.nivel && /^Requiere/.test(g.estado) ? `<div class="nivel">Aprueba: ${esc(g.nivel)}</div>` : ''}<div class="sync">${esc(g.resuelto || '')}</div></td>
         <td class="why">${String(g.obs || '').split(' | ').slice(0, 4).map(o => `<div>${esc(o)}</div>`).join('')}${g.comentario ? `<div><b>Administración:</b> ${esc(g.comentario)}</div>` : ''}</td>
-        <td><div class="row" style="gap:6px;flex-wrap:nowrap">${isAdmin() && /^Requiere/.test(g.estado) ? `<button class="btn ok sm" data-res="${g.id}">Resolver</button>` : ''}<button class="btn sm" data-his="${g.id}">Historial</button>${isAdmin() ? `<button class="btn sm" data-del="${g.id}" title="Eliminar">✕</button>` : ''}</div></td>
+        <td><div class="acts">${isAdmin() && /^Requiere/.test(g.estado) ? `<button class="btn ok sm" data-res="${g.id}">Resolver</button>` : ''}<button class="btn sm" data-his="${g.id}">Historial</button>${isAdmin() ? `<button class="btn sm" data-del="${g.id}" title="Eliminar">✕</button>` : ''}</div></td>
       </tr>`; }).join('') : `<tr><td colspan="11" class="empty">Ningún gasto coincide con los filtros.</td></tr>`) + '</tbody>';
     $$('[data-res]').forEach(b => b.onclick = () => resolver(b.dataset.res));
     $$('[data-his]').forEach(b => b.onclick = () => verHist(b.dataset.his));
