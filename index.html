@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Validador de Gastos Corporativos · Umbro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  :root{--ink:#0F172A;--ink2:#475569;--ink3:#94A3B8;--line:#E2E8F0;--bg:#F4F6F9;--card:#FFFFFF;--acc:#0B3D91;--acc2:#E8EEF9;
+    --ok:#15803D;--okb:#E4F4E4;--warn:#B45309;--warnb:#FFF3D1;--bad:#B91C1C;--badb:#FBE0DF;--r:14px}
+  *{box-sizing:border-box}
+  [hidden]{display:none !important}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.45}
+  button,input,select,textarea{font:inherit;color:inherit}
+  header{background:#0B1220;color:#fff;position:sticky;top:0;z-index:10}
+  .top{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+  .logo{width:38px;height:38px;border-radius:10px;background:#fff;color:#0B1220;display:grid;place-items:center;font-weight:800;font-size:15px;letter-spacing:-.5px}
+  .brand h1{font-size:17px;margin:0;font-weight:700}
+  .brand p{margin:0;font-size:12.5px;color:#9FB0C8}
+  nav{display:flex;gap:4px;background:rgba(255,255,255,.07);padding:4px;border-radius:12px}
+  nav button{background:none;border:0;color:#C8D3E3;padding:8px 14px;border-radius:9px;cursor:pointer;font-weight:600;font-size:13.5px;display:flex;gap:7px;align-items:center}
+  nav button[aria-selected="true"]{background:#fff;color:#0B1220}
+  nav .n{background:#F59E0B;color:#111;border-radius:99px;padding:0 7px;font-size:11.5px;font-weight:800}
+  .conn{display:flex;gap:8px;font-size:12px}
+  .dot{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:99px;background:rgba(255,255,255,.08);color:#C8D3E3;cursor:pointer;border:0}
+  .dot i{width:8px;height:8px;border-radius:50%;background:#64748B}
+  .dot.on i{background:#22C55E}.dot.off i{background:#F59E0B}
+  main{max-width:1320px;margin:0 auto;padding:22px}
+  .view[hidden]{display:none}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+  .grid2{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px;align-items:start}
+  @media (max-width:980px){.grid2{grid-template-columns:1fr}}
+  h2{font-size:18px;margin:0 0 4px}
+  h3{font-size:15px;margin:0 0 10px}
+  .sub{color:var(--ink2);margin:0 0 16px;font-size:13.5px}
+  .step{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;font-weight:700;margin-right:8px}
+  label.f{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+  input,select,textarea{border:1px solid #CBD5E1;border-radius:10px;padding:9px 11px;background:#fff;font-size:14px;color:var(--ink);min-height:40px;width:100%}
+  input:focus,select:focus,textarea:focus{outline:2px solid #93B4EC;border-color:var(--acc)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .fields .w{grid-column:1/-1}
+  .btn{border:1px solid #CBD5E1;background:#fff;border-radius:10px;padding:9px 15px;cursor:pointer;font-weight:600;font-size:13.5px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+  .btn:hover{background:#F8FAFC}
+  .btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+  .btn.pri:hover{background:#0A3480}
+  .btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+  .btn.bad{background:#fff;border-color:#F3B4B1;color:var(--bad)}
+  .btn.sm{min-height:32px;padding:5px 11px;font-size:12.5px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .drop{border:2px dashed #B6C3D6;border-radius:var(--r);background:#F8FAFD;padding:26px;text-align:center;cursor:pointer;transition:.15s;position:relative}
+  .drop.over{border-color:var(--acc);background:var(--acc2)}
+  .drop b{display:block;font-size:15px;margin:8px 0 4px}
+  .drop span{color:var(--ink2);font-size:13px}
+  .prev{display:none;margin-top:14px;text-align:center}
+  .prev img{max-width:100%;max-height:420px;border-radius:10px;border:1px solid var(--line);box-shadow:0 10px 30px -18px rgba(0,0,0,.4)}
+  .samples{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+  .sample{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;text-align:left;cursor:pointer;font-size:12.5px}
+  .sample b{display:block;font-size:13px}
+  .sample span{color:var(--ink2)}
+  .sample:hover{border-color:var(--acc)}
+  .msg{border-radius:10px;padding:10px 13px;font-size:13.5px;margin:12px 0 0}
+  .msg.info{background:var(--acc2);color:#0B2A63}.msg.err{background:var(--badb);color:#7F1D1D}.msg.okm{background:var(--okb);color:#14532D}
+  .spin{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;display:inline-block}
+  .spin.dk{border-color:#CBD5E1;border-top-color:var(--acc)}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .verdict{border-radius:var(--r);padding:16px 18px;display:flex;gap:14px;align-items:center;margin-bottom:14px}
+  .verdict .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;font-weight:800;flex:none}
+  .verdict h3{margin:0;font-size:17px}
+  .verdict p{margin:2px 0 0;font-size:13px}
+  .v-ok{background:var(--okb);color:#14532D}.v-ok .ic{background:var(--ok);color:#fff}
+  .v-warn{background:var(--warnb);color:#713F12}.v-warn .ic{background:#F59E0B;color:#111}
+  .v-bad{background:var(--badb);color:#7F1D1D}.v-bad .ic{background:var(--bad);color:#fff}
+  .v-none{background:#F1F5F9;color:var(--ink2)}.v-none .ic{background:#CBD5E1;color:#fff}
+  .rules{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .rules li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:9px;background:#F8FAFC;font-size:13px}
+  .rules li i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:none;margin-top:1px}
+  .rules .ok i{background:var(--okb);color:var(--ok)}
+  .rules .warn i{background:var(--warnb);color:var(--warn)}
+  .rules .bad i{background:var(--badb);color:var(--bad)}
+  .rules li b{display:block;font-weight:600}
+  .rules li span{color:var(--ink2)}
+  .items{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+  .items td{padding:5px 6px;border-bottom:1px solid var(--line)}
+  .items td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .items tr.prohib td{color:var(--bad)}
+  .conf{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:8px}
+  .bar{height:6px;border-radius:9px;background:#E2E8F0;overflow:hidden;width:110px}
+  .bar b{display:block;height:100%;background:var(--ok)}
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+  @media (max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+  .kpi span{font-size:12.5px;color:var(--ink2);font-weight:600}
+  .kpi b{display:block;font-size:23px;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi small{color:var(--ink3);font-size:12px}
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end}
+  .filters label{min-width:150px}
+  .tw{overflow:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+  table.t{width:100%;border-collapse:collapse;font-size:13px;min-width:980px}
+  .t th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);background:#F8FAFC;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  .t td{padding:10px 12px;border-bottom:1px solid #EEF2F7;vertical-align:top}
+  .t tr:hover td{background:#FAFBFD}
+  .t .mono{white-space:nowrap}
+  .t .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pill{display:inline-block;padding:3px 9px;border-radius:99px;font-size:12px;font-weight:700;white-space:nowrap}
+  .p-ok{background:var(--okb);color:var(--ok)}.p-warn{background:var(--warnb);color:var(--warn)}.p-bad{background:var(--badb);color:var(--bad)}
+  .sync{font-size:11.5px;color:var(--ink3)}
+  .why{color:var(--ink2);font-size:12px;max-width:320px}
+  .thumb{width:44px;height:56px;object-fit:cover;border-radius:6px;border:1px solid var(--line);cursor:zoom-in}
+  .charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  @media (max-width:980px){.charts{grid-template-columns:1fr}}
+  .hb{display:flex;flex-direction:column;gap:10px}
+  .hb .r{display:grid;grid-template-columns:150px 1fr 170px;gap:10px;align-items:center;font-size:13px}
+  .hb .tr{height:14px;background:#EEF2F7;border-radius:8px;overflow:hidden;position:relative}
+  .hb .tr b{display:block;height:100%;border-radius:8px;background:var(--acc)}
+  .hb .tr em{position:absolute;top:-3px;bottom:-3px;width:2px;background:#0F172A}
+  .hb .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink2)}
+  .pol{width:100%;border-collapse:collapse;font-size:13.5px}
+  .pol td{padding:8px 6px;border-bottom:1px solid var(--line)}
+  .pol input{max-width:150px}
+  .hint{font-size:12px;color:var(--ink2);font-weight:400}
+  dialog{border:0;border-radius:16px;padding:0;max-width:min(720px,94vw);box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+  dialog::backdrop{background:rgba(15,23,42,.55)}
+  .dlg{padding:20px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#0F172A;color:#fff;padding:11px 18px;border-radius:12px;font-size:13.5px;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+  .empty{text-align:center;padding:40px;color:var(--ink2)}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12.5px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">UM</div>
+      <div><h1>Validador de Gastos Corporativos</h1><p>Umbro Uruguay · rendición de gastos con IA</p></div>
+    </div>
+    <nav role="tablist" aria-label="Secciones">
+      <button role="tab" data-v="cargar" aria-selected="true">Cargar gasto</button>
+      <button role="tab" data-v="bandeja" aria-selected="false">Gastos <span class="n" id="nPend" hidden>0</span></button>
+      <button role="tab" data-v="panel" aria-selected="false">Panel</button>
+      <button role="tab" data-v="politicas" aria-selected="false">Políticas y conexión</button>
+    </nav>
+    <div class="conn">
+      <button class="dot" id="dotIA" type="button" title="Conexión con la IA"><i></i>IA</button>
+      <button class="dot" id="dotDB" type="button" title="Conexión con Google Sheets"><i></i>Google Sheets</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- CARGAR -->
+  <section class="view" id="v-cargar">
+    <div class="grid2">
+      <div class="card">
+        <h2><span class="step">1</span>Subí el comprobante</h2>
+        <p class="sub">Foto o captura de la boleta, e-ticket o factura. La IA lee el comercio, el RUT, la fecha, el monto y el IVA.</p>
+        <div class="fields" style="margin-bottom:14px">
+          <label class="f">Empleado<select id="emp"></select></label>
+          <label class="f">Área<input id="area" readonly></label>
+          <label class="f w">Motivo del gasto<input id="motivo" placeholder="Ej.: almuerzo con el cliente Deportes del Este para cerrar pedido de verano"></label>
+        </div>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir comprobante">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0B3D91" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 18v-6M9 15l3-3 3 3"/></svg>
+          <b>Arrastrá el recibo acá o tocá para elegirlo</b>
+          <span>JPG o PNG · en el celular podés sacar la foto directamente</span>
+          <input type="file" id="file" accept="image/*" class="sr">
+        </div>
+        <div class="prev" id="prev"><img id="prevImg" alt="Comprobante cargado"></div>
+        <button class="btn pri" id="btnLeer" type="button" style="width:100%;margin-top:16px;min-height:46px" disabled>Leer comprobante con IA</button>
+        <div id="msgLeer"></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="step">2</span>Revisá los datos y la validación</h2>
+        <p class="sub">Podés corregir cualquier dato: la validación se recalcula sola.</p>
+        <div class="verdict v-none" id="verdict"><div class="ic">?</div><div><h3>Esperando un comprobante</h3><p>Subí un recibo y tocá "Leer comprobante con IA".</p></div></div>
+        <div class="fields" id="form">
+          <label class="f">Comercio<input data-k="comercio"></label>
+          <label class="f">RUT del comercio<input data-k="rut" inputmode="numeric" placeholder="12 dígitos"></label>
+          <label class="f">N° de comprobante<input data-k="numero"></label>
+          <label class="f">Fecha del gasto<input data-k="fecha" type="date"></label>
+          <label class="f">Moneda<select data-k="moneda"><option value="UYU">Pesos (UYU)</option><option value="USD">Dólares (USD)</option></select></label>
+          <label class="f">Monto total<input data-k="total" type="number" step="0.01" min="0"></label>
+          <label class="f">IVA incluido<input data-k="iva" type="number" step="0.01" min="0"></label>
+          <label class="f">Categoría<select data-k="categoria"></select></label>
+          <div class="w" id="itemsBox" hidden><span class="hint" style="font-weight:600">Detalle leído por la IA</span><table class="items" id="items"></table></div>
+          <div class="w conf" id="confBox" hidden>Confianza de la lectura<div class="bar"><b id="confBar"></b></div><span id="confTxt"></span></div>
+        </div>
+        <h3 style="margin-top:18px">Reglas de la política de gastos</h3>
+        <ul class="rules" id="rules"><li class="ok"><i>·</i><div><span>Las reglas aparecen cuando hay un comprobante cargado.</span></div></li></ul>
+        <div class="row" style="margin-top:16px">
+          <button class="btn pri" id="btnGuardar" type="button" disabled style="flex:1;min-height:46px">Enviar a la base de datos</button>
+          <button class="btn" id="btnLimpiar" type="button">Nuevo gasto</button>
+        </div>
+        <div id="msgGuardar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANDEJA -->
+  <section class="view" id="v-bandeja" hidden>
+    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <div><h2>Gastos rendidos</h2><p class="sub" style="margin:0">Los gastos que requieren aprobación los resuelve el gerente desde acá. Todo queda guardado en Google Sheets.</p></div>
+      <div class="row"><button class="btn" id="btnSync" type="button">Actualizar desde la planilla</button><button class="btn" id="btnCsv" type="button">Descargar Excel (CSV)</button><a class="btn" id="lnkSheet" target="_blank" rel="noopener" hidden>Abrir planilla</a></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="filters">
+      <label class="f">Estado<select id="fEst"><option value="">Todos</option><option>Aprobado</option><option>Requiere aprobación</option><option>Rechazado</option></select></label>
+      <label class="f">Empleado<select id="fEmp"><option value="">Todos</option></select></label>
+      <label class="f">Categoría<select id="fCat"><option value="">Todas</option></select></label>
+      <label class="f">Mes<input type="month" id="fMes"></label>
+      <label class="f" style="flex:1;min-width:200px">Buscar<input id="fTxt" placeholder="Comercio, RUT, motivo…"></label>
+    </div>
+    <div class="tw"><table class="t" id="tabla"></table></div>
+  </section>
+
+  <!-- PANEL -->
+  <section class="view" id="v-panel" hidden>
+    <h2>Panel de control</h2>
+    <p class="sub">Resumen del mes seleccionado. La línea negra marca el presupuesto mensual de cada área.</p>
+    <div class="row" style="margin-bottom:16px"><label class="f" style="max-width:220px">Mes<input type="month" id="pMes"></label></div>
+    <div class="kpis" id="pKpis"></div>
+    <div class="charts">
+      <div class="card"><h3>Gasto por área vs. presupuesto</h3><div class="hb" id="chArea"></div></div>
+      <div class="card"><h3>Gasto por categoría</h3><div class="hb" id="chCat"></div></div>
+      <div class="card"><h3>Gasto por empleado</h3><div class="hb" id="chEmp"></div></div>
+      <div class="card"><h3>Motivos más comunes de observación</h3><div class="hb" id="chWhy"></div></div>
+    </div>
+  </section>
+
+  <!-- POLITICAS -->
+  <section class="view" id="v-politicas" hidden>
+    <div class="grid2">
+      <div class="card">
+        <h2>Política de gastos</h2>
+        <p class="sub">Topes por comprobante en pesos uruguayos. Si un gasto supera el tope pasa a aprobación del gerente; si supera el doble, se rechaza.</p>
+        <table class="pol" id="polCat"></table>
+        <h3 style="margin-top:20px">Presupuesto mensual por área (UYU)</h3>
+        <table class="pol" id="polArea"></table>
+        <h3 style="margin-top:20px">Reglas generales</h3>
+        <table class="pol">
+          <tr><td>Días máximos para rendir un gasto</td><td><input type="number" data-p="diasMax" min="1"></td></tr>
+          <tr><td>Monto que siempre requiere aprobación (UYU)</td><td><input type="number" data-p="umbral" min="0"></td></tr>
+          <tr><td>Tipo de cambio USD → UYU</td><td><input type="number" data-p="tc" step="0.01" min="1"></td></tr>
+          <tr><td>Fin de semana requiere aprobación</td><td><select data-p="finde"><option value="si">Sí</option><option value="no">No</option></select></td></tr>
+          <tr><td>Palabras de ítems no reembolsables<br><span class="hint">Separadas por coma</span></td><td><input data-p="prohibidos" style="max-width:none"></td></tr>
+        </table>
+        <div class="row" style="margin-top:14px"><button class="btn" id="btnPolReset" type="button">Volver a la política original</button></div>
+      </div>
+      <div class="card">
+        <h2>Conexión</h2>
+        <p class="sub" id="srvNote">La IA lee los recibos con Pollinations y los gastos se guardan en una planilla de Google Sheets.</p>
+        <div id="keyBox">
+          <label class="f">Clave de Pollinations (sk_…)<input id="pkey" type="password" autocomplete="off" placeholder="sk_..."></label>
+          <p class="hint">Se guarda solo en este navegador. Sin clave se usa la IA gratis, que es más lenta.</p>
+        </div>
+        <div class="row" style="margin:8px 0 18px"><button class="btn" id="btnTestIA" type="button">Probar la IA</button><span id="outIA" class="hint"></span></div>
+        <label class="f">URL de la aplicación web de Google Sheets<input id="surl" placeholder="https://script.google.com/macros/s/.../exec"></label>
+        <label class="f" style="margin-top:10px">Link de la planilla (opcional, para el botón "Abrir planilla")<input id="slink" placeholder="https://docs.google.com/spreadsheets/d/..."></label>
+        <div class="row" style="margin:10px 0 18px"><button class="btn" id="btnTestDB" type="button">Probar la planilla</button><span id="outDB" class="hint"></span></div>
+        <h3>Empleados</h3>
+        <p class="hint" style="margin-top:-4px">Uno por línea: Nombre — Área</p>
+        <textarea id="emps" rows="7"></textarea>
+        <div class="row" style="margin-top:14px"><button class="btn bad" id="btnBorrar" type="button">Borrar los gastos guardados en este navegador</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg"><div class="dlg"><img id="dlgImg" alt="Comprobante" style="max-width:100%;max-height:78vh;display:block;margin:0 auto"><div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" type="button" onclick="this.closest('dialog').close()">Cerrar</button></div></div></dialog>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const LS = 'umbro-gastos-v1';
+  const LINK_DEFAULT = 'https://docs.google.com/spreadsheets/d/1a0Hm9lv6haeGIVMtKjdj0KjPs7_MeebyWUyq3-JJNl8/edit';
+  const SHEETS_DEFAULT = 'https://script.google.com/macros/s/AKfycbzc7kGlMdgo8HBctKUpMjFyCt8jgRu5yn-stvOKym_TWDttm5F3svImOXW-fCaQ5sMJ/exec';
+  const fmt = (n, m) => (m === 'USD' ? 'US$ ' : '$ ') + Number(n || 0).toLocaleString('es-UY', {minimumFractionDigits: 0, maximumFractionDigits: 2});
+  const hoy = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const parseISO = s => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const toast = t => { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 2800); };
+
+  // ---------- Política por defecto ----------
+  const POL0 = {
+    cats: [
+      ['Comida con clientes', 3000], ['Almuerzo en viaje', 900], ['Combustible', 4000], ['Taxi / Uber / ómnibus', 1500],
+      ['Alojamiento', 7000], ['Envíos y logística', 6000], ['Insumos de tienda', 5000], ['Marketing y eventos deportivos', 15000], ['Otros', 2000]
+    ],
+    areas: [['Ventas mayoristas', 60000], ['Marketing', 80000], ['Logística', 50000], ['Tiendas', 30000], ['Administración', 20000]],
+    diasMax: 60, umbral: 10000, tc: 40, finde: 'si',
+    prohibidos: 'vino, cerveza, whisky, fernet, alcohol, champagne, espumante, cigarrillos, tabaco, propina'
+  };
+  const EMPS0 = 'Martina López — Ventas mayoristas\nDiego Fernández — Ventas mayoristas\nSofía Rodríguez — Marketing\nJoaquín Pereira — Logística\nValentina Silva — Tiendas\nNicolás Martínez — Administración';
+
+  let st = {pol: JSON.parse(JSON.stringify(POL0)), emps: EMPS0, gastos: [], key: '', surl: '', slink: ''};
+  try { const s = JSON.parse(localStorage.getItem(LS) || 'null'); if (s) st = Object.assign(st, s); } catch {}
+  const save = () => { try { localStorage.setItem(LS, JSON.stringify(st)); } catch (e) { toast('El navegador se quedó sin espacio: borrá gastos viejos'); } };
+  let serverMode = false, serverSheet = '';
+
+  const emps = () => st.emps.split('\n').map(l => l.split(/\s+[—–-]\s+/)).filter(p => p[0] && p[0].trim()).map(p => ({nombre: p[0].trim(), area: (p[1] || 'Administración').trim()}));
+  const tope = c => { const f = st.pol.cats.find(x => x[0] === c); return f ? Number(f[1]) : 0; };
+  const sheetsURL = () => serverMode && serverSheet ? '/api/sheets' : ((st.surl || '').trim() || SHEETS_DEFAULT);
+
+  // ---------- Estado del gasto actual ----------
+  let cur = null; // {img, thumb, data:{...}, ia:{...}, sample}
+  function blank(){ return {comercio:'', rut:'', numero:'', fecha:'', moneda:'UYU', total:'', iva:'', categoria:'Otros', items:[], confianza:null}; }
+
+  // ---------- Imagen ----------
+  function loadImg(src){ return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
+  async function shrink(src, max, q){
+    const im = await loadImg(src), k = Math.min(1, max / Math.max(im.width, im.height));
+    const c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', q);
+  }
+  async function setImage(src, sample){
+    const img = await shrink(src, 1500, .85), thumb = await shrink(src, 520, .6);
+    cur = {img, thumb, data: blank(), ia: null, sample: sample || null};
+    $('#prevImg').src = img; $('#prev').style.display = 'block'; $('#btnLeer').disabled = false;
+    $('#msgLeer').innerHTML = ''; $('#msgGuardar').innerHTML = '';
+    fillForm(); validateAndRender();
+  }
+
+  // ---------- Recibos de ejemplo (se dibujan como foto de un ticket) ----------
+  function ultimoHabil(diasAtras){ const d = hoy(); d.setDate(d.getDate() - diasAtras); while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() - 1); return d; }
+  function ultimoSabado(){ const d = hoy(); d.setDate(d.getDate() - 1); while (d.getDay() !== 6) d.setDate(d.getDate() - 1); return d; }
+  const SAMPLES = [
+    {t:'Almuerzo con cliente', s:'Debería aprobarse', emp:0, motivo:'Almuerzo con el cliente Deportes del Este para cerrar el pedido de verano',
+     d:() => ({comercio:'Parrilla El Fogón del Puerto', rut:'214587650018', numero:'e-Ticket A 102334', fecha: iso(ultimoHabil(3)), moneda:'UYU', total:1840, iva:167.27, categoria:'Comida con clientes',
+       items:[{desc:'2 x Menú ejecutivo', monto:1480},{desc:'2 x Agua mineral 500 ml', monto:360}], tasa:'10%', dir:'Rambla 25 de Agosto 512, Montevideo'})},
+    {t:'Combustible', s:'Supera el tope', emp:3, motivo:'Nafta para el reparto a clientes del interior',
+     d:() => ({comercio:'Estación de Servicio Ruta 5', rut:'217799120015', numero:'e-Factura B 558201', fecha: iso(ultimoHabil(6)), moneda:'UYU', total:5200, iva:937.70, categoria:'Combustible',
+       items:[{desc:'Nafta Súper 95 - 66,8 L', monto:5200}], tasa:'22%', dir:'Ruta 5 km 32, Canelones'})},
+    {t:'Cena de sábado', s:'Fin de semana y alcohol', emp:1, motivo:'Cena con distribuidor de Maldonado',
+     d:() => ({comercio:'Bar Puerto Escondido', rut:'213301450012', numero:'e-Ticket A 77412', fecha: iso(ultimoSabado()), moneda:'UYU', total:3450, iva:313.64, categoria:'Comida con clientes',
+       items:[{desc:'2 x Chivito al plato', monto:2160},{desc:'1 x Vino tinto Tannat 750 ml', monto:890},{desc:'2 x Postre del día', monto:400}], tasa:'10%', dir:'Calle 20 y 27, Punta del Este'})},
+    {t:'Hotel en dólares', s:'Fuera de plazo', emp:2, motivo:'Alojamiento por la activación de marca en el torneo de fútbol playa',
+     d:() => { const f = hoy(); f.setDate(f.getDate() - 75); return {comercio:'Hotel Costa Sur', rut:'215566780019', numero:'e-Factura A 9921', fecha: iso(f), moneda:'USD', total:120, iva:10.91, categoria:'Alojamiento',
+       items:[{desc:'1 noche habitación doble', monto:120}], tasa:'10%', dir:'Av. Roosevelt parada 7, Maldonado'}; }}
+  ];
+  function drawTicket(d){
+    const W = 620, lines = [];
+    const c = document.createElement('canvas'); c.width = 820; c.height = 1180; const x = c.getContext('2d');
+    x.fillStyle = '#6B6158'; x.fillRect(0, 0, c.width, c.height);
+    const g = x.createRadialGradient(410, 500, 100, 410, 600, 800); g.addColorStop(0, 'rgba(255,255,255,.12)'); g.addColorStop(1, 'rgba(0,0,0,.25)'); x.fillStyle = g; x.fillRect(0, 0, c.width, c.height);
+    x.save(); x.translate(410, 590); x.rotate(-0.025); x.translate(-W / 2, -520);
+    x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 30; x.shadowOffsetY = 12; x.fillStyle = '#FBFAF6'; x.fillRect(0, 0, W, 1040); x.shadowColor = 'transparent';
+    let y = 70; const C = W / 2;
+    const t = (s, size, al, w) => { x.font = `${w || 500} ${size}px "Courier New", ui-monospace, monospace`; x.fillStyle = '#26221F'; x.textAlign = al || 'left'; x.fillText(s, al === 'center' ? C : al === 'right' ? W - 40 : 40, y); };
+    t(d.comercio.toUpperCase(), 30, 'center', 700); y += 36;
+    t(d.dir, 19, 'center'); y += 28; t('RUT ' + d.rut, 21, 'center'); y += 40;
+    const dash = () => { x.fillStyle = '#26221F'; x.textAlign = 'left'; x.font = '500 20px "Courier New", monospace'; x.fillText('-'.repeat(44), 40, y); y += 34; };
+    t(d.numero, 22, 'left', 700); y += 30;
+    const [yy, mm, dd] = d.fecha.split('-'); t('Fecha: ' + `${dd}/${mm}/${yy}` + '   Hora: 13:42', 21); y += 30; dash();
+    d.items.forEach(it => { t(it.desc, 21); t((d.moneda === 'USD' ? 'US$ ' : '$ ') + it.monto.toFixed(2).replace('.', ','), 21, 'right'); y += 32; });
+    dash();
+    const neto = d.total - d.iva;
+    t('Subtotal neto', 21); t(neto.toFixed(2).replace('.', ','), 21, 'right'); y += 30;
+    t('IVA ' + d.tasa, 21); t(d.iva.toFixed(2).replace('.', ','), 21, 'right'); y += 40;
+    t('TOTAL ' + (d.moneda === 'USD' ? 'US$' : '$'), 30, 'left', 700); t(d.total.toFixed(2).replace('.', ','), 30, 'right', 700); y += 46; dash();
+    t('Forma de pago: Tarjeta corporativa', 20); y += 28; t('Cliente: UMBRO URUGUAY - Consumo final', 19); y += 50;
+    t('Puede verificar comprobante en www.efactura.dgi.gub.uy', 16, 'center'); y += 40;
+    for (let i = 0; i < 46; i++){ x.fillStyle = (i * 7919) % 3 ? '#26221F' : '#FBFAF6'; x.fillRect(150 + i * 7, y, (i % 4) + 2, 70); }
+    y += 110; t('¡Gracias por su visita!', 22, 'center');
+    x.restore();
+    return c.toDataURL('image/jpeg', .9);
+  }
+  function renderSamples(){
+    $('#samples').innerHTML = SAMPLES.map((s, i) => `<button type="button" class="sample" data-i="${i}"><b>${esc(s.t)}</b><span>${esc(s.s)}</span></button>`).join('');
+    $$('#samples .sample').forEach(b => b.onclick = async () => {
+      const s = SAMPLES[+b.dataset.i], d = s.d();
+      const e = emps()[s.emp]; if (e) $('#emp').value = e.nombre; syncArea(); $('#motivo').value = s.motivo;
+      await setImage(drawTicket(d), d);
+      $('#msgLeer').innerHTML = '<p class="msg info">Recibo de ejemplo cargado. Ahora tocá "Leer comprobante con IA".</p>';
+    });
+  }
+
+  // ---------- IA (Pollinations con visión) ----------
+  const key = () => serverMode ? 'server' : (st.key || '').trim();
+  function catsList(){ return st.pol.cats.map(c => c[0]); }
+  function parseJSON(txt){
+    let s = String(txt || '').trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();
+    const a = s.indexOf('{'), b = s.lastIndexOf('}'); if (a >= 0 && b > a) s = s.slice(a, b + 1);
+    return JSON.parse(s);
+  }
+  async function aiVision(img, signal){
+    const prompt = `Sos un asistente contable en Uruguay. Leé este comprobante (boleta, e-ticket o factura) y devolvé SOLO un JSON, sin texto extra, con esta forma exacta:
+{"es_comprobante": true, "comercio": "", "rut": "", "numero": "", "fecha": "YYYY-MM-DD", "moneda": "UYU o USD", "total": 0, "iva": 0, "tasa_iva": "22% o 10% o exento", "items": [{"desc": "", "monto": 0}], "categoria": "", "confianza": 0.0, "notas": ""}
+Reglas: "total" es el importe final pagado, como número (usá punto decimal, la coma del ticket es decimal). "rut" solo dígitos. Si un dato no se ve, dejalo vacío o null. "categoria" debe ser una de estas: ${catsList().join(' | ')}. "confianza" entre 0 y 1 según qué tan legible es. Si la imagen no es un comprobante, es_comprobante=false.`;
+    const body = JSON.stringify({model: 'openai', messages: [{role: 'user', content: [{type: 'text', text: prompt}, {type: 'image_url', image_url: {url: img}}]}], seed: Math.floor(Math.random() * 1e9)});
+    const k = key();
+    const url = serverMode ? '/api/chat' : k ? 'https://gen.pollinations.ai/v1/chat/completions' : 'https://text.pollinations.ai/openai';
+    const hdr = {'Content-Type': 'application/json'}; if (k && !serverMode) hdr.Authorization = 'Bearer ' + k;
+    let res;
+    try { res = await fetch(url, {method: 'POST', headers: hdr, body, signal}); }
+    catch (e) { throw {code: signal && signal.aborted ? 'timeout' : 'red'}; }
+    if (res.status === 401 || res.status === 403) throw {code: 'clave'};
+    if (res.status === 402) throw {code: 'saldo'};
+    if (res.status === 429) throw {code: 'limite'};
+    if (!res.ok) throw {code: 'red', status: res.status};
+    const raw = await res.text(); let txt = raw;
+    try { const j = JSON.parse(raw); if (j && j.choices && j.choices[0]) txt = j.choices[0].message.content || ''; } catch {}
+    try { return parseJSON(txt); } catch { throw {code: 'formato'}; }
+  }
+  const aiErr = e => ({clave: 'La clave de Pollinations no es válida. Revisala en "Políticas y conexión".', saldo: 'Tu cuenta de Pollinations se quedó sin saldo.',
+    limite: 'Muchos pedidos seguidos a la IA. Esperá unos segundos y probá de nuevo.', formato: 'La IA respondió algo que no se pudo leer. Probá de nuevo.',
+    timeout: 'La IA tardó demasiado en responder. Probá de nuevo.'})[e && e.code] || 'No se pudo conectar con la IA. Revisá tu conexión y probá de nuevo.';
+
+  function normFecha(s){
+    s = String(s || '').trim(); let m;
+    if ((m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s))) return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+    if ((m = /^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/.exec(s))) { const y = m[3].length === 2 ? '20' + m[3] : m[3]; return `${y}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`; }
+    return '';
+  }
+  const num = v => { if (v === null || v === undefined || v === '') return ''; if (typeof v === 'number') return v; const s = String(v).replace(/[^\d,.-]/g, ''); const n = /,\d{1,2}$/.test(s) ? Number(s.replace(/\./g, '').replace(',', '.')) : Number(s.replace(/,/g, '')); return isFinite(n) ? n : ''; };
+  function fromAI(o){
+    const cat = catsList().find(c => c.toLowerCase() === String(o.categoria || '').toLowerCase()) || guessCat(o) || 'Otros';
+    return {comercio: String(o.comercio || '').trim(), rut: String(o.rut || '').replace(/\D/g, ''), numero: String(o.numero || '').trim(), fecha: normFecha(o.fecha),
+      moneda: /usd|us\$|d[oó]lar/i.test(o.moneda || '') ? 'USD' : 'UYU', total: num(o.total), iva: num(o.iva), categoria: cat,
+      items: Array.isArray(o.items) ? o.items.filter(i => i && i.desc).map(i => ({desc: String(i.desc), monto: num(i.monto)})) : [],
+      confianza: o.confianza == null ? null : Math.max(0, Math.min(1, Number(o.confianza))), es_comprobante: o.es_comprobante !== false, notas: o.notas || ''};
+  }
+  function guessCat(o){
+    const s = (o.comercio + ' ' + (o.items || []).map(i => i.desc).join(' ')).toLowerCase();
+    if (/nafta|gasoil|combustible|estaci[oó]n|ancap|petrobras|axion/.test(s)) return 'Combustible';
+    if (/hotel|hostel|posada|alojamiento/.test(s)) return 'Alojamiento';
+    if (/uber|taxi|cabify|[oó]mnibus|cutcsa|pasaje/.test(s)) return 'Taxi / Uber / ómnibus';
+    if (/parrilla|restaurant|bar|caf[eé]|men[uú]|chivito|almuerzo|cena/.test(s)) return 'Comida con clientes';
+    if (/env[ií]o|dac|correo|flete|log[ií]stica/.test(s)) return 'Envíos y logística';
+    return '';
+  }
+
+  async function leer(){
+    if (!cur) return;
+    const b = $('#btnLeer'); b.disabled = true; b.innerHTML = '<span class="spin"></span> La IA está leyendo el comprobante…';
+    $('#msgLeer').innerHTML = '';
+    const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), 90000);
+    try {
+      const o = fromAI(await aiVision(cur.img, ctrl.signal));
+      if (!o.es_comprobante){ $('#msgLeer').innerHTML = '<p class="msg err">La IA dice que la imagen no parece un comprobante. Probá con otra foto o completá los datos a mano.</p>'; }
+      cur.data = Object.assign(blank(), o); cur.ia = o;
+      $('#msgLeer').innerHTML += `<p class="msg okm">Listo: la IA leyó el comprobante. Revisá los datos a la derecha.${o.notas ? ' Nota de la IA: ' + esc(o.notas) : ''}</p>`;
+    } catch (e) {
+      if (cur.sample){
+        cur.data = Object.assign(blank(), cur.sample, {confianza: null}); cur.ia = null;
+        $('#msgLeer').innerHTML = `<p class="msg err">${esc(aiErr(e))} Como es un recibo de ejemplo, cargué sus datos para que puedas probar las reglas igual.</p>`;
+      } else {
+        $('#msgLeer').innerHTML = `<p class="msg err">${esc(aiErr(e))} También podés completar los datos a mano a la derecha.</p>`;
+      }
+    } finally { clearTimeout(to); b.disabled = false; b.textContent = 'Volver a leer con IA'; }
+    fillForm(); validateAndRender();
+  }
+
+  // ---------- Formulario ----------
+  function fillForm(){
+    const d = cur ? cur.data : blank();
+    $$('#form [data-k]').forEach(el => { const v = d[el.dataset.k]; el.value = v === null || v === undefined ? '' : v; });
+    const it = d.items || [], pw = prohibidos();
+    $('#itemsBox').hidden = !it.length;
+    $('#items').innerHTML = it.map(i => `<tr class="${pw.some(p => i.desc.toLowerCase().includes(p)) ? 'prohib' : ''}"><td>${esc(i.desc)}</td><td>${i.monto === '' ? '' : fmt(i.monto, d.moneda)}</td></tr>`).join('');
+    const cf = d.confianza; $('#confBox').hidden = cf == null;
+    if (cf != null){ $('#confBar').style.width = Math.round(cf * 100) + '%'; $('#confBar').style.background = cf >= .75 ? 'var(--ok)' : cf >= .5 ? '#F59E0B' : 'var(--bad)'; $('#confTxt').textContent = Math.round(cf * 100) + '%'; }
+  }
+  function readForm(){
+    if (!cur) return;
+    $$('#form [data-k]').forEach(el => { const k = el.dataset.k; cur.data[k] = ['total', 'iva'].includes(k) ? (el.value === '' ? '' : Number(el.value)) : el.value.trim(); });
+  }
+  const prohibidos = () => String(st.pol.prohibidos || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+  // ---------- Motor de validación ----------
+  function enUYU(d){ return d.moneda === 'USD' ? Number(d.total || 0) * Number(st.pol.tc || 0) : Number(d.total || 0); }
+  function validar(d, emp, area, motivo, excluirId){
+    const R = [], add = (lvl, t, s) => R.push({lvl, t, s});
+    const P = st.pol, total = Number(d.total || 0), uyu = enUYU(d), f = parseISO(d.fecha), h = hoy();
+    // 1. Datos obligatorios
+    const falt = [['comercio', 'comercio'], ['fecha', 'fecha'], ['total', 'monto']].filter(([k]) => !d[k] || (k === 'total' && !(total > 0))).map(x => x[1]);
+    if (!emp) falt.push('empleado');
+    falt.length ? add('bad', 'Faltan datos obligatorios', 'Completá: ' + falt.join(', ') + '.') : add('ok', 'Datos obligatorios completos', 'Empleado, comercio, fecha y monto.');
+    if (!String(motivo || '').trim()) add('warn', 'Falta el motivo del gasto', 'La política pide explicar para qué fue el gasto.');
+    // 2. Fecha
+    if (f){
+      const dias = Math.round((h - f) / 864e5);
+      if (dias < 0) add('bad', 'Fecha en el futuro', 'El comprobante tiene una fecha posterior a hoy.');
+      else if (dias > P.diasMax) add('bad', 'Fuera de plazo', `Tiene ${dias} días; el máximo para rendir es ${P.diasMax} días.`);
+      else add('ok', 'Dentro del plazo de rendición', `Tiene ${dias} ${dias === 1 ? 'día' : 'días'} (máximo ${P.diasMax}).`);
+      const dw = f.getDay();
+      if ((dw === 0 || dw === 6) && P.finde === 'si' && d.categoria !== 'Marketing y eventos deportivos') add('warn', 'Gasto en fin de semana', 'Los gastos de sábado o domingo los tiene que aprobar el gerente.');
+    }
+    // 3. Comprobante fiscal (RUT de 12 dígitos)
+    const rut = String(d.rut || '').replace(/\D/g, '');
+    if (!rut) add('warn', 'Comprobante sin RUT', 'Sin RUT no es un comprobante fiscal válido para deducir IVA.');
+    else if (rut.length !== 12) add('warn', 'RUT con formato raro', `El RUT uruguayo tiene 12 dígitos; este tiene ${rut.length}.`);
+    else add('ok', 'Comprobante fiscal con RUT', 'RUT ' + rut + '.');
+    // 4. IVA coherente
+    if (total > 0 && d.iva !== '' && d.iva != null){
+      const iva = Number(d.iva), b22 = total * 22 / 122, b10 = total * 10 / 110;
+      const okIva = iva === 0 || Math.abs(iva - b22) <= Math.max(2, b22 * .03) || Math.abs(iva - b10) <= Math.max(2, b10 * .03);
+      okIva ? add('ok', 'IVA coherente con el total', iva === 0 ? 'Exento de IVA.' : `Coincide con la tasa ${Math.abs(iva - b22) < Math.abs(iva - b10) ? 'básica (22%)' : 'mínima (10%)'}.`)
+        : add('warn', 'El IVA no cierra', `Con ese total el IVA debería ser ${fmt(b22, d.moneda)} (22%) o ${fmt(b10, d.moneda)} (10%).`);
+    }
+    // 5. Moneda
+    if (d.moneda === 'USD' && total > 0) add('ok', 'Convertido a pesos', `${fmt(total, 'USD')} × ${P.tc} = ${fmt(uyu)}.`);
+    // 6. Tope por categoría
+    const tp = tope(d.categoria);
+    if (total > 0 && tp){
+      if (uyu > tp * 2) add('bad', 'Supera el doble del tope', `${d.categoria}: tope ${fmt(tp)} por comprobante; este es de ${fmt(uyu)}.`);
+      else if (uyu > tp) add('warn', 'Supera el tope de la categoría', `${d.categoria}: tope ${fmt(tp)}; este es de ${fmt(uyu)} (+${Math.round((uyu / tp - 1) * 100)}%).`);
+      else add('ok', 'Dentro del tope de la categoría', `${d.categoria}: ${fmt(uyu)} de ${fmt(tp)}.`);
+    }
+    if (uyu >= P.umbral) add('warn', 'Monto alto', `Todo gasto de ${fmt(P.umbral)} o más necesita aprobación.`);
+    // 7. Ítems no reembolsables
+    const pw = prohibidos(), malos = (d.items || []).filter(i => pw.some(p => String(i.desc).toLowerCase().includes(p)));
+    if (malos.length){ const m = malos.reduce((s, i) => s + (Number(i.monto) || 0), 0); add('warn', 'Incluye ítems no reembolsables', `${malos.map(i => i.desc).join(', ')}${m ? ' (' + fmt(m, d.moneda) + ')' : ''}. Se reintegraría ${fmt(Math.max(0, total - m), d.moneda)}.`); }
+    // 8. Duplicados
+    const dup = st.gastos.find(g => g.id !== excluirId && g.estado !== 'Rechazado' && ((rut && d.numero && g.rut === rut && g.numero === d.numero) || (g.comercio.toLowerCase() === String(d.comercio).toLowerCase() && g.fecha === d.fecha && Math.abs(g.total - total) < .01)));
+    if (dup) add('bad', 'Comprobante duplicado', `Ya fue rendido por ${dup.empleado} el ${dup.cargado.slice(0, 10)} (${dup.id}).`);
+    else if (total > 0) add('ok', 'No está duplicado', 'No hay otro gasto con el mismo comprobante.');
+    // 9. Presupuesto del área
+    if (area && f && total > 0){
+      const mes = d.fecha.slice(0, 7), pres = Number((P.areas.find(a => a[0] === area) || [])[1] || 0);
+      const usado = st.gastos.filter(g => g.id !== excluirId && g.area === area && g.fecha.slice(0, 7) === mes && g.estado !== 'Rechazado').reduce((s, g) => s + g.uyu, 0);
+      if (pres){ usado + uyu > pres ? add('warn', 'Excede el presupuesto del área', `${area}: ${fmt(usado + uyu)} de ${fmt(pres)} en el mes.`) : add('ok', 'Dentro del presupuesto del área', `${area}: ${fmt(usado + uyu)} de ${fmt(pres)} en el mes.`); }
+    }
+    // 10. Lectura de la IA
+    if (d.confianza != null && d.confianza < .6) add('warn', 'Lectura dudosa', 'La IA no está segura de lo que leyó: revisá los datos con la foto.');
+    const estado = R.some(r => r.lvl === 'bad') ? 'Rechazado' : R.some(r => r.lvl === 'warn') ? 'Requiere aprobación' : 'Aprobado';
+    return {R, estado, uyu};
+  }
+
+  function validateAndRender(){
+    if (!cur){
+      $('#verdict').className = 'verdict v-none'; $('#verdict').innerHTML = '<div class="ic">?</div><div><h3>Esperando un comprobante</h3><p>Subí un recibo y tocá "Leer comprobante con IA".</p></div>';
+      $('#rules').innerHTML = '<li class="ok"><i>·</i><div><span>Las reglas aparecen cuando hay un comprobante cargado.</span></div></li>'; $('#btnGuardar').disabled = true; return;
+    }
+    const v = validar(cur.data, $('#emp').value, $('#area').value, $('#motivo').value);
+    const cls = {Aprobado: ['v-ok', '✓', 'Aprobado automáticamente', 'Cumple toda la política. Se reintegra sin pasar por el gerente.'],
+      'Requiere aprobación': ['v-warn', '!', 'Requiere aprobación del gerente', 'Hay observaciones: se guarda como pendiente hasta que el gerente lo resuelva.'],
+      Rechazado: ['v-bad', '✕', 'Rechazado', 'No cumple la política de gastos. Se guarda igual para dejar registro.']}[v.estado];
+    const sinDatos = !cur.data.total && !cur.data.comercio;
+    $('#verdict').className = 'verdict ' + (sinDatos ? 'v-none' : cls[0]);
+    $('#verdict').innerHTML = sinDatos ? '<div class="ic">…</div><div><h3>Falta leer el comprobante</h3><p>Tocá "Leer comprobante con IA" o completá los datos a mano.</p></div>'
+      : `<div class="ic">${cls[1]}</div><div><h3>${cls[2]}</h3><p>${cls[3]}${cur.data.moneda === 'USD' ? ' Monto en pesos: ' + fmt(v.uyu) + '.' : ''}</p></div>`;
+    $('#rules').innerHTML = v.R.map(r => `<li class="${r.lvl}"><i>${r.lvl === 'ok' ? '✓' : r.lvl === 'warn' ? '!' : '✕'}</i><div><b>${esc(r.t)}</b><span>${esc(r.s)}</span></div></li>`).join('');
+    $('#btnGuardar').disabled = sinDatos;
+    $('#btnGuardar').textContent = sinDatos ? 'Enviar a la base de datos' : `Enviar a la base de datos (${v.estado.toLowerCase()})`;
+  }
+
+  // ---------- Guardar ----------
+  const newId = () => 'G-' + Date.now().toString(36).toUpperCase().slice(-6);
+  function toRow(g){
+    return {'ID': g.id, 'Fecha de carga': g.cargado, 'Empleado': g.empleado, 'Área': g.area, 'Fecha del gasto': g.fecha, 'Comercio': g.comercio, 'RUT': g.rut,
+      'N° comprobante': g.numero, 'Categoría': g.categoria, 'Moneda': g.moneda, 'Monto': g.total, 'IVA': g.iva, 'Monto en UYU': Math.round(g.uyu * 100) / 100,
+      'Motivo': g.motivo, 'Estado': g.estado, 'Resultado de la validación': g.obs, 'Resuelto por': g.resuelto, 'Comentario': g.comentario || '', 'Confianza IA': g.confianza == null ? '' : g.confianza};
+  }
+  function fromRow(r){
+    const g = {id: String(r['ID']), cargado: String(r['Fecha de carga'] || ''), empleado: r['Empleado'] || '', area: r['Área'] || '', fecha: String(r['Fecha del gasto'] || '').slice(0, 10),
+      comercio: r['Comercio'] || '', rut: String(r['RUT'] || ''), numero: String(r['N° comprobante'] || ''), categoria: r['Categoría'] || 'Otros', moneda: r['Moneda'] || 'UYU',
+      total: Number(r['Monto']) || 0, iva: r['IVA'] === '' ? '' : Number(r['IVA']), uyu: Number(r['Monto en UYU']) || 0, motivo: r['Motivo'] || '', estado: r['Estado'] || 'Requiere aprobación',
+      obs: r['Resultado de la validación'] || '', resuelto: r['Resuelto por'] || '', comentario: r['Comentario'] || '', confianza: r['Confianza IA'] === '' ? null : Number(r['Confianza IA']), synced: true};
+    return g;
+  }
+  async function sheet(payload){
+    const url = sheetsURL(); if (!url) throw new Error('sin-url');
+    const r = payload ? await fetch(url, {method: 'POST', body: JSON.stringify(payload)}) : await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now());
+    if (!r.ok) throw new Error('http ' + r.status);
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || 'error'); return j;
+  }
+  async function guardar(){
+    readForm(); const emp = $('#emp').value, area = $('#area').value, motivo = $('#motivo').value.trim();
+    const v = validar(cur.data, emp, area, motivo), d = cur.data, now = new Date();
+    const g = {id: newId(), cargado: iso(now) + ' ' + now.toTimeString().slice(0, 5), empleado: emp, area, fecha: d.fecha, comercio: d.comercio, rut: String(d.rut || '').replace(/\D/g, ''),
+      numero: d.numero, categoria: d.categoria, moneda: d.moneda, total: Number(d.total) || 0, iva: d.iva === '' ? '' : Number(d.iva), uyu: v.uyu, motivo, estado: v.estado,
+      obs: v.R.filter(r => r.lvl !== 'ok').map(r => (r.lvl === 'bad' ? '✕ ' : '! ') + r.t + ': ' + r.s).join(' | ') || 'Cumple toda la política',
+      resuelto: v.estado === 'Aprobado' ? 'Automático' : v.estado === 'Rechazado' ? 'Automático' : '', comentario: '', confianza: d.confianza, thumb: cur.thumb, synced: false};
+    st.gastos.unshift(g); save();
+    const b = $('#btnGuardar'); b.disabled = true; b.innerHTML = '<span class="spin"></span> Guardando…';
+    let ok = false, err = '';
+    if (sheetsURL()){ try { await sheet({action: 'add', row: toRow(g)}); g.synced = true; ok = true; save(); } catch (e) { err = e.message; } }
+    $('#msgGuardar').innerHTML = ok ? `<p class="msg okm">Guardado en Google Sheets como <b>${g.id}</b> · estado: ${g.estado}.</p>`
+      : sheetsURL() ? `<p class="msg err">Se guardó en este navegador (${g.id}), pero no se pudo enviar a Google Sheets. Tocá "Actualizar desde la planilla" en Gastos para reintentar.</p>`
+      : `<p class="msg info">Guardado en este navegador como <b>${g.id}</b>. Para que también vaya a Google Sheets, conectá la planilla en "Políticas y conexión".</p>`;
+    renderBandeja(); renderPanel(); updBadge();
+    setTimeout(limpiar, 50);
+    void err;
+  }
+  function limpiar(){
+    cur = null; $('#prev').style.display = 'none'; $('#prevImg').removeAttribute('src'); $('#file').value = ''; $('#btnLeer').disabled = true; $('#btnLeer').textContent = 'Leer comprobante con IA';
+    $('#motivo').value = ''; $('#msgLeer').innerHTML = ''; fillForm(); validateAndRender();
+  }
+
+  // ---------- Bandeja ----------
+  const pill = e => `<span class="pill ${e === 'Aprobado' ? 'p-ok' : e === 'Rechazado' ? 'p-bad' : 'p-warn'}">${esc(e)}</span>`;
+  function filtrados(){
+    const fe = $('#fEst').value, fm = $('#fEmp').value, fc = $('#fCat').value, fmes = $('#fMes').value, ft = $('#fTxt').value.trim().toLowerCase();
+    return st.gastos.filter(g => (!fe || g.estado === fe) && (!fm || g.empleado === fm) && (!fc || g.categoria === fc) && (!fmes || g.fecha.slice(0, 7) === fmes)
+      && (!ft || [g.comercio, g.rut, g.motivo, g.id, g.numero].join(' ').toLowerCase().includes(ft)));
+  }
+  function kpis(list, box){
+    const sum = l => l.reduce((s, g) => s + g.uyu, 0), by = e => list.filter(g => g.estado === e);
+    $(box).innerHTML = [['Total rendido', sum(list), list.length + ' gastos'], ['Aprobado', sum(by('Aprobado')), by('Aprobado').length + ' gastos'],
+      ['Pendiente de aprobación', sum(by('Requiere aprobación')), by('Requiere aprobación').length + ' gastos'], ['Rechazado', sum(by('Rechazado')), by('Rechazado').length + ' gastos']]
+      .map(([t, v, s]) => `<div class="kpi"><span>${t}</span><b>${fmt(v)}</b><small>${s.replace(/^1 gastos$/, '1 gasto')}</small></div>`).join('');
+  }
+  function renderBandeja(){
+    const list = filtrados(); kpis(list, '#kpis');
+    if (!st.gastos.length){ $('#tabla').innerHTML = '<tr><td class="empty">Todavía no hay gastos. Cargá el primero en "Cargar gasto".</td></tr>'; return; }
+    $('#tabla').innerHTML = `<thead><tr><th></th><th>ID</th><th>Empleado</th><th>Fecha</th><th>Comercio</th><th>Categoría</th><th class="num">Monto</th><th>Estado</th><th>Observaciones</th><th>Acciones</th></tr></thead><tbody>` +
+      (list.length ? list.map(g => `<tr>
+        <td>${g.thumb ? `<img class="thumb" src="${g.thumb}" alt="Comprobante ${esc(g.id)}" data-zoom="${g.id}">` : ''}</td>
+        <td class="mono">${esc(g.id)}<div class="sync">${g.synced ? '✓ en Sheets' : 'solo local'}</div></td>
+        <td>${esc(g.empleado)}<div class="sync">${esc(g.area)}</div></td>
+        <td style="white-space:nowrap">${esc(g.fecha.split('-').reverse().join('/'))}</td>
+        <td>${esc(g.comercio)}<div class="sync">${g.rut ? 'RUT ' + esc(g.rut) : 'sin RUT'}</div></td>
+        <td>${esc(g.categoria)}</td>
+        <td class="num">${fmt(g.total, g.moneda)}${g.moneda === 'USD' ? `<div class="sync">${fmt(g.uyu)}</div>` : ''}</td>
+        <td>${pill(g.estado)}<div class="sync">${esc(g.resuelto || '')}</div></td>
+        <td class="why">${String(g.obs || '').split(' | ').map(o => `<div>${esc(o)}</div>`).join('')}${g.comentario ? `<div><b>Gerente:</b> ${esc(g.comentario)}</div>` : ''}</td>
+        <td>${g.estado === 'Requiere aprobación' ? `<div class="row" style="gap:6px;flex-wrap:nowrap"><button class="btn ok sm" data-ap="${g.id}">Aprobar</button><button class="btn bad sm" data-re="${g.id}">Rechazar</button></div>` : `<button class="btn sm" data-del="${g.id}" title="Eliminar">Eliminar</button>`}</td>
+      </tr>`).join('') : '<tr><td colspan="10" class="empty">Ningún gasto coincide con los filtros.</td></tr>') + '</tbody>';
+    $$('[data-ap]').forEach(b => b.onclick = () => resolver(b.dataset.ap, 'Aprobado'));
+    $$('[data-re]').forEach(b => b.onclick = () => resolver(b.dataset.re, 'Rechazado'));
+    $$('[data-del]').forEach(b => b.onclick = () => eliminar(b.dataset.del));
+    $$('[data-zoom]').forEach(i => i.onclick = () => { $('#dlgImg').src = i.src; $('#dlg').showModal(); });
+  }
+  async function resolver(id, estado){
+    const g = st.gastos.find(x => x.id === id); if (!g) return;
+    const com = prompt(estado === 'Aprobado' ? 'Comentario del gerente (opcional):' : '¿Por qué se rechaza? (opcional)', '');
+    if (com === null) return;
+    g.estado = estado; g.resuelto = 'Gerente · ' + iso(new Date()); g.comentario = com.trim(); save(); renderBandeja(); renderPanel(); updBadge();
+    if (sheetsURL()){ try { await sheet({action: 'update', id, set: {'Estado': estado, 'Resuelto por': g.resuelto, 'Comentario': g.comentario}}); toast('Actualizado en Google Sheets'); } catch { g.synced = false; save(); renderBandeja(); toast('Se guardó acá, pero no se pudo actualizar la planilla'); } }
+    else toast(estado === 'Aprobado' ? 'Gasto aprobado' : 'Gasto rechazado');
+  }
+  async function eliminar(id){
+    if (!confirm('¿Eliminar el gasto ' + id + '?')) return;
+    st.gastos = st.gastos.filter(g => g.id !== id); save(); renderBandeja(); renderPanel(); updBadge();
+    if (sheetsURL()){ try { await sheet({action: 'delete', id}); } catch {} }
+  }
+  async function sincronizar(silencioso){
+    if (!sheetsURL()){ if (!silencioso) toast('Primero conectá la planilla en "Políticas y conexión"'); return; }
+    const b = $('#btnSync'); b.disabled = true; b.innerHTML = '<span class="spin dk"></span> Actualizando…';
+    try {
+      for (const g of st.gastos.filter(g => !g.synced)){ try { await sheet({action: 'add', row: toRow(g)}); await sheet({action: 'update', id: g.id, set: {'Estado': g.estado, 'Resuelto por': g.resuelto, 'Comentario': g.comentario}}); g.synced = true; } catch {} }
+      const j = await sheet(), thumbs = Object.fromEntries(st.gastos.map(g => [g.id, g.thumb]));
+      const remotos = j.rows.map(fromRow).map(g => Object.assign(g, {thumb: thumbs[g.id]}));
+      const locales = st.gastos.filter(g => !g.synced && !remotos.some(r => r.id === g.id));
+      st.gastos = locales.concat(remotos.sort((a, b) => String(b.cargado).localeCompare(String(a.cargado)))); save();
+      renderBandeja(); renderPanel(); updBadge(); if (!silencioso) toast(`Planilla al día: ${remotos.length} gastos`); setDot('#dotDB', true);
+    } catch (e) { if (!silencioso) toast('No se pudo leer la planilla. Revisá la URL en "Políticas y conexión".'); setDot('#dotDB', false); }
+    finally { b.disabled = false; b.textContent = 'Actualizar desde la planilla'; }
+  }
+  function csv(){
+    const rows = [Object.keys(toRow({}))].concat(filtrados().map(g => Object.values(toRow(g))));
+    const txt = '﻿' + rows.map(r => r.map(v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`).join(';')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], {type: 'text/csv;charset=utf-8'})); a.download = 'gastos-umbro.csv'; a.click();
+  }
+  function updBadge(){ const n = st.gastos.filter(g => g.estado === 'Requiere aprobación').length; $('#nPend').hidden = !n; $('#nPend').textContent = n; }
+
+  // ---------- Panel ----------
+  function bars(box, data, presupuestos){
+    const max = Math.max(1, ...data.map(d => d[1]), ...(presupuestos ? Object.values(presupuestos) : [0]));
+    $(box).innerHTML = data.length ? data.map(([k, v]) => { const p = presupuestos && presupuestos[k];
+      return `<div class="r"><span>${esc(k)}</span><div class="tr"><b style="width:${(v / max * 100).toFixed(1)}%;${p && v > p ? 'background:var(--bad)' : ''}"></b>${p ? `<em style="left:${(p / max * 100).toFixed(1)}%"></em>` : ''}</div><span class="v">${typeof v === 'number' && box !== '#chWhy' ? fmt(v) : v}${p ? ` / ${fmt(p)}` : ''}</span></div>`; }).join('')
+      : '<p class="hint">Sin datos para este mes.</p>';
+  }
+  function renderPanel(){
+    const mes = $('#pMes').value, list = st.gastos.filter(g => !mes || g.fecha.slice(0, 7) === mes), valid = list.filter(g => g.estado !== 'Rechazado');
+    kpis(list, '#pKpis');
+    const agg = k => Object.entries(valid.reduce((o, g) => (o[g[k]] = (o[g[k]] || 0) + g.uyu, o), {})).sort((a, b) => b[1] - a[1]);
+    const pres = Object.fromEntries(st.pol.areas.map(a => [a[0], Number(a[1])]));
+    const areas = st.pol.areas.map(a => [a[0], valid.filter(g => g.area === a[0]).reduce((s, g) => s + g.uyu, 0)]);
+    bars('#chArea', areas, pres); bars('#chCat', agg('categoria')); bars('#chEmp', agg('empleado'));
+    const why = {}; list.forEach(g => String(g.obs || '').split(' | ').forEach(o => { const t = o.replace(/^[✕!]\s*/, '').split(':')[0].trim(); if (t && t !== 'Cumple toda la política') why[t] = (why[t] || 0) + 1; }));
+    bars('#chWhy', Object.entries(why).sort((a, b) => b[1] - a[1]).slice(0, 6));
+  }
+
+  // ---------- Políticas ----------
+  function renderPol(){
+    $('#polCat').innerHTML = st.pol.cats.map((c, i) => `<tr><td>${esc(c[0])}</td><td><input type="number" min="0" step="100" value="${c[1]}" data-cat="${i}"></td></tr>`).join('');
+    $('#polArea').innerHTML = st.pol.areas.map((a, i) => `<tr><td>${esc(a[0])}</td><td><input type="number" min="0" step="1000" value="${a[1]}" data-ar="${i}"></td></tr>`).join('');
+    $$('[data-p]').forEach(el => el.value = st.pol[el.dataset.p]);
+    $$('[data-cat]').forEach(el => el.onchange = () => { st.pol.cats[+el.dataset.cat][1] = Number(el.value) || 0; save(); validateAndRender(); });
+    $$('[data-ar]').forEach(el => el.onchange = () => { st.pol.areas[+el.dataset.ar][1] = Number(el.value) || 0; save(); validateAndRender(); renderPanel(); });
+    $$('[data-p]').forEach(el => el.onchange = () => { st.pol[el.dataset.p] = el.type === 'number' ? Number(el.value) || 0 : el.value; save(); fillForm(); validateAndRender(); });
+  }
+  function renderSelects(){
+    const E = emps(), prev = $('#emp').value;
+    $('#emp').innerHTML = E.map(e => `<option>${esc(e.nombre)}</option>`).join(''); if (E.some(e => e.nombre === prev)) $('#emp').value = prev; syncArea();
+    $('#fEmp').innerHTML = '<option value="">Todos</option>' + E.map(e => `<option>${esc(e.nombre)}</option>`).join('');
+    const cats = catsList();
+    $('[data-k="categoria"]').innerHTML = cats.map(c => `<option>${esc(c)}</option>`).join('');
+    $('#fCat').innerHTML = '<option value="">Todas</option>' + cats.map(c => `<option>${esc(c)}</option>`).join('');
+  }
+  function syncArea(){ const e = emps().find(x => x.nombre === $('#emp').value); $('#area').value = e ? e.area : ''; }
+  function setDot(sel, on){ const d = $(sel); d.classList.toggle('on', !!on); d.classList.toggle('off', on === false); }
+
+  // ---------- Eventos ----------
+  $$('nav button').forEach(b => b.onclick = () => { $$('nav button').forEach(x => x.setAttribute('aria-selected', String(x === b))); $$('.view').forEach(v => v.hidden = v.id !== 'v-' + b.dataset.v);
+    if (b.dataset.v === 'bandeja') renderBandeja(); if (b.dataset.v === 'panel') renderPanel(); });
+  const go = v => $(`nav button[data-v="${v}"]`).click();
+  $('#dotIA').onclick = () => go('politicas'); $('#dotDB').onclick = () => go('politicas');
+  const drop = $('#drop'), file = $('#file');
+  drop.onclick = () => file.click(); drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); file.click(); } };
+  ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) readFile(f); });
+  file.onchange = () => { if (file.files[0]) readFile(file.files[0]); };
+  function readFile(f){ if (!/^image\//.test(f.type)) { toast('Subí una imagen (JPG o PNG). Si tenés un PDF, sacale una captura.'); return; } const r = new FileReader(); r.onload = () => setImage(r.result).catch(() => toast('No se pudo abrir la imagen')); r.readAsDataURL(f); }
+  $('#btnLeer').onclick = leer;
+  $('#form').addEventListener('input', () => { readForm(); validateAndRender(); });
+  $('#form').addEventListener('change', () => { readForm(); fillForm(); validateAndRender(); });
+  $('#emp').onchange = () => { syncArea(); validateAndRender(); };
+  $('#motivo').oninput = validateAndRender;
+  $('#btnGuardar').onclick = guardar; $('#btnLimpiar').onclick = limpiar;
+  ['#fEst', '#fEmp', '#fCat', '#fMes'].forEach(s => $(s).onchange = renderBandeja); $('#fTxt').oninput = renderBandeja;
+  $('#pMes').onchange = renderPanel;
+  $('#btnSync').onclick = () => sincronizar(false); $('#btnCsv').onclick = csv;
+  $('#pkey').value = st.key || ''; $('#pkey').onchange = () => { st.key = $('#pkey').value.trim(); save(); setDot('#dotIA', st.key ? true : null); };
+  $('#surl').value = st.surl || SHEETS_DEFAULT; $('#surl').onchange = () => { st.surl = $('#surl').value.trim(); save(); setDot('#dotDB', null); };
+  $('#slink').value = st.slink || LINK_DEFAULT; $('#slink').onchange = () => { st.slink = $('#slink').value.trim(); save(); updLink(); };
+  function updLink(){ const l = (st.slink || '').trim() || LINK_DEFAULT; $('#lnkSheet').hidden = !l; if (l) $('#lnkSheet').href = l; }
+  $('#emps').value = st.emps; $('#emps').onchange = () => { st.emps = $('#emps').value; save(); renderSelects(); validateAndRender(); };
+  $('#btnPolReset').onclick = () => { if (confirm('¿Volver a la política original?')) { st.pol = JSON.parse(JSON.stringify(POL0)); save(); renderPol(); renderSelects(); validateAndRender(); } };
+  $('#btnBorrar').onclick = () => { if (confirm('Se borran los gastos de este navegador (la planilla de Google no se toca). ¿Seguir?')) { st.gastos = []; save(); renderBandeja(); renderPanel(); updBadge(); } };
+  $('#btnTestIA').onclick = async () => {
+    $('#outIA').innerHTML = '<span class="spin dk"></span> Probando…';
+    const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), 60000);
+    try { const o = fromAI(await aiVision(drawTicket(SAMPLES[0].d()), ctrl.signal)); $('#outIA').textContent = o.total ? `✓ Funciona: leyó "${o.comercio}" por ${fmt(o.total)}` : '✓ La IA respondió'; setDot('#dotIA', true); }
+    catch (e) { $('#outIA').textContent = '✕ ' + aiErr(e); setDot('#dotIA', false); } finally { clearTimeout(to); }
+  };
+  $('#btnTestDB').onclick = async () => {
+    if (!sheetsURL()){ $('#outDB').textContent = 'Pegá primero la URL de la aplicación web.'; return; }
+    $('#outDB').innerHTML = '<span class="spin dk"></span> Probando…';
+    try { const j = await sheet(); $('#outDB').textContent = `✓ Conectado: la planilla tiene ${j.rows.length} gastos`; setDot('#dotDB', true); sincronizar(true); }
+    catch { $('#outDB').textContent = '✕ No responde. Revisá que la URL termine en /exec y que el acceso sea "Cualquier persona".'; setDot('#dotDB', false); }
+  };
+
+  // ---------- Inicio ----------
+  const m = iso(hoy()).slice(0, 7); $('#pMes').value = m;
+  renderSelects(); renderPol(); fillForm(); updLink(); renderBandeja(); renderPanel(); updBadge(); validateAndRender();
+  setDot('#dotIA', st.key ? true : null); setDot('#dotDB', null);
+  if (location.protocol.startsWith('http')) fetch('/api/status', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(j => {
+    if (!j) return;
+    if (j.hasKey){ serverMode = true; $('#keyBox').hidden = true; $('#srvNote').textContent = 'La IA ya está conectada con la cuenta de Pollinations del sitio: cualquiera que abra este link puede leer recibos.'; setDot('#dotIA', true); }
+    if (j.hasSheets){ serverSheet = 'server'; $('#surl').closest('label').hidden = true; if (j.sheetLink && !st.slink){ st.slink = j.sheetLink; updLink(); } }
+  }).catch(() => {}).finally(() => { if (sheetsURL()) sincronizar(true); });
+})();
+</script>
+</body>
+</html>
