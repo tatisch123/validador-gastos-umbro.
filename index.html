@@ -596,7 +596,7 @@
     return JSON.parse(s);
   }
   async function aiVision(img, signal, model){
-    const cats = st.pol.cats.map(c => `- ${c.id}: ${c.nombre}. ${c.desc}`).join('\n');
+    const cats = st.pol.cats.map(c => `- ${c.id}: ${c.nombre} (${String(c.desc).slice(0, 110)})`).join('\n');
     const prompt = `Sos un asistente contable de una empresa uruguaya de ropa deportiva. Leé este comprobante (boleta, e-ticket o factura) y devolvé SOLO un JSON, sin texto extra, con esta forma exacta:
 {"es_comprobante": true, "comercio": "", "rubro": "qué tipo de comercio es", "rut": "", "numero": "", "fecha": "YYYY-MM-DD", "moneda": "UYU o USD", "total": 0, "iva": 0, "items": [{"desc": "", "monto": 0, "categoria": "id", "razon": "por qué esa categoría, en pocas palabras"}], "confianza": 0.0}
 Reglas:
@@ -641,15 +641,19 @@ ${cats}
     const b = $('#btnLeer'); b.disabled = true; b.innerHTML = '<span class="spin"></span> La IA está leyendo el comprobante…'; $('#msgLeer').innerHTML = '';
     let to = null;
     try {
-      // Primero un modelo rápido; si falla o tarda, se reintenta con otro modelo y la foto más liviana
-      const intentos = [['gemini', 1280, 50000, 'La IA está leyendo el comprobante…'], ['openai', 1000, 60000, 'Probando con otra IA…']];
+      // Se le pide a dos modelos de IA a la vez (foto liviana) y se usa la primera respuesta que llegue bien
+      const ctrl = new AbortController(); to = setTimeout(() => ctrl.abort(), 120000);
+      const img = await shrink(cur.img, 1000, .78), t0 = Date.now();
+      const tick = setInterval(() => { b.innerHTML = '<span class="spin"></span> La IA está leyendo el comprobante… ' + Math.round((Date.now() - t0) / 1000) + ' s'; }, 1000);
       let r = null, ultimo = null;
-      for (const [modelo, px, ms, txt] of intentos){
-        b.innerHTML = '<span class="spin"></span> ' + txt;
-        const ctrl = new AbortController(); to = setTimeout(() => ctrl.abort(), ms);
-        try { r = await aiVision(await shrink(cur.img, px, .82), ctrl.signal, modelo); clearTimeout(to); break; }
-        catch (e1) { clearTimeout(to); ultimo = e1; if (e1 && ['clave', 'saldo', 'sinclave'].includes(e1.code)) break; }
-      }
+      try {
+        r = await new Promise((ok, ko) => {
+          let fallas = 0; const errs = [];
+          ['openai', 'gemini'].forEach(m => aiVision(img, ctrl.signal, m).then(ok, e => { errs.push(e); if (++fallas === 2) ko(errs.find(x => x && ['clave', 'saldo', 'sinclave'].includes(x.code)) || errs.find(x => x && x.status) || errs[0]); }));
+        });
+        ctrl.abort();
+      } catch (e1) { ultimo = e1; }
+      finally { clearInterval(tick); clearTimeout(to); }
       if (!r) throw ultimo;
       const o = fromAI(r);
       cur.data = Object.assign(blank(), JSON.parse(JSON.stringify(o))); cur.ia = JSON.parse(JSON.stringify(o)); cur.unlock = {}; cur.logged = {}; cur.manualItems = {};
