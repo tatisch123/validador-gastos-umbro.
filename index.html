@@ -43,6 +43,7 @@
   .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .fields .w{grid-column:1/-1}
   .btn{border:1px solid #CBD5E1;background:#fff;border-radius:10px;padding:9px 15px;cursor:pointer;font-weight:600;font-size:13.5px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+  a.btn{color:var(--ink);text-decoration:none}
   .btn:hover{background:#F8FAFC}
   .btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
   .btn.pri:hover{background:#0A3480}
@@ -168,7 +169,7 @@
           <span>JPG o PNG · en el celular podés sacar la foto directamente</span>
           <input type="file" id="file" accept="image/*" class="sr">
         </div>
-        <div class="prev" id="prev"><img id="prevImg" alt="Comprobante cargado"></div>
+        <div class="prev" id="prev"><img id="prevImg" alt="Comprobante cargado"><div><button class="btn bad sm" id="btnQuitar" type="button" style="margin-top:10px">✕ Quitar este comprobante</button></div></div>
         <button class="btn pri" id="btnLeer" type="button" style="width:100%;margin-top:16px;min-height:46px" disabled>Leer comprobante con IA</button>
         <div id="msgLeer"></div>
       </div>
@@ -258,9 +259,10 @@
           <p class="hint">Se guarda solo en este navegador. Sin clave se usa la IA gratis, que es más lenta.</p>
         </div>
         <div class="row" style="margin:8px 0 18px"><button class="btn" id="btnTestIA" type="button">Probar la IA</button><span id="outIA" class="hint"></span></div>
-        <label class="f">URL de la aplicación web de Google Sheets<input id="surl" placeholder="https://script.google.com/macros/s/.../exec"></label>
-        <label class="f" style="margin-top:10px">Link de la planilla (opcional, para el botón "Abrir planilla")<input id="slink" placeholder="https://docs.google.com/spreadsheets/d/..."></label>
-        <div class="row" style="margin:10px 0 18px"><button class="btn" id="btnTestDB" type="button">Probar la planilla</button><span id="outDB" class="hint"></span></div>
+        <h3 style="margin-top:8px">Base de datos</h3>
+        <p class="hint" style="margin-top:-4px">Los gastos se guardan en la planilla de Google Sheets <b>Gastos Umbro</b>, en la pestaña "Gastos".</p>
+        <div class="row" style="margin:10px 0 18px"><a class="btn" id="lnkSheet2" target="_blank" rel="noopener">Abrir planilla</a><button class="btn" id="btnTestDB" type="button">Comprobar conexión</button><span id="outDB" class="hint"></span></div>
+        <input id="surl" type="hidden"><input id="slink" type="hidden">
         <h3>Empleados</h3>
         <p class="hint" style="margin-top:-4px">Uno por línea: Nombre — Área</p>
         <textarea id="emps" rows="7"></textarea>
@@ -400,14 +402,14 @@ Reglas: "total" es el importe final pagado, como número (usá punto decimal, la
     try { res = await fetch(url, {method: 'POST', headers: hdr, body, signal}); }
     catch (e) { throw {code: signal && signal.aborted ? 'timeout' : 'red'}; }
     if (res.status === 401 || res.status === 403) throw {code: 'clave'};
-    if (res.status === 402) throw {code: 'saldo'};
+    if (res.status === 402) throw {code: k ? 'saldo' : 'sinclave'};
     if (res.status === 429) throw {code: 'limite'};
     if (!res.ok) throw {code: 'red', status: res.status};
     const raw = await res.text(); let txt = raw;
     try { const j = JSON.parse(raw); if (j && j.choices && j.choices[0]) txt = j.choices[0].message.content || ''; } catch {}
     try { return parseJSON(txt); } catch { throw {code: 'formato'}; }
   }
-  const aiErr = e => ({clave: 'La clave de Pollinations no es válida. Revisala en "Políticas y conexión".', saldo: 'Tu cuenta de Pollinations se quedó sin saldo.',
+  const aiErr = e => ({sinclave: 'La IA gratis no lee fotos. Pegá tu clave de Pollinations en "Políticas y conexión" (se hace una sola vez).', clave: 'La clave de Pollinations no es válida. Revisala en "Políticas y conexión".', saldo: 'Tu cuenta de Pollinations se quedó sin saldo.',
     limite: 'Muchos pedidos seguidos a la IA. Esperá unos segundos y probá de nuevo.', formato: 'La IA respondió algo que no se pudo leer. Probá de nuevo.',
     timeout: 'La IA tardó demasiado en responder. Probá de nuevo.'})[e && e.code] || 'No se pudo conectar con la IA. Revisá tu conexión y probá de nuevo.';
 
@@ -535,7 +537,7 @@ Reglas: "total" es el importe final pagado, como número (usá punto decimal, la
   function validateAndRender(){
     if (!cur){
       $('#verdict').className = 'verdict v-none'; $('#verdict').innerHTML = '<div class="ic">?</div><div><h3>Esperando un comprobante</h3><p>Subí un recibo y tocá "Leer comprobante con IA".</p></div>';
-      $('#rules').innerHTML = '<li class="ok"><i>·</i><div><span>Las reglas aparecen cuando hay un comprobante cargado.</span></div></li>'; $('#btnGuardar').disabled = true; return;
+      $('#rules').innerHTML = '<li class="ok"><i>·</i><div><span>Las reglas aparecen cuando hay un comprobante cargado.</span></div></li>'; $('#btnGuardar').disabled = true; $('#btnGuardar').textContent = 'Enviar a la base de datos'; return;
     }
     const v = validar(cur.data, $('#emp').value, $('#area').value, $('#motivo').value);
     const cls = {Aprobado: ['v-ok', '✓', 'Aprobado automáticamente', 'Cumple toda la política. Se reintegra sin pasar por el gerente.'],
@@ -716,13 +718,14 @@ Reglas: "total" es el importe final pagado, como número (usá punto decimal, la
   $('#emp').onchange = () => { syncArea(); validateAndRender(); };
   $('#motivo').oninput = validateAndRender;
   $('#btnGuardar').onclick = guardar; $('#btnLimpiar').onclick = limpiar;
+  $('#btnQuitar').onclick = () => { const m = $('#motivo').value; limpiar(); $('#motivo').value = m; $('#msgGuardar').innerHTML = ''; toast('Comprobante quitado: podés subir otro'); };
   ['#fEst', '#fEmp', '#fCat', '#fMes'].forEach(s => $(s).onchange = renderBandeja); $('#fTxt').oninput = renderBandeja;
   $('#pMes').onchange = renderPanel;
   $('#btnSync').onclick = () => sincronizar(false); $('#btnCsv').onclick = csv;
   $('#pkey').value = st.key || ''; $('#pkey').onchange = () => { st.key = $('#pkey').value.trim(); save(); setDot('#dotIA', st.key ? true : null); };
   $('#surl').value = st.surl || SHEETS_DEFAULT; $('#surl').onchange = () => { st.surl = $('#surl').value.trim(); save(); setDot('#dotDB', null); };
   $('#slink').value = st.slink || LINK_DEFAULT; $('#slink').onchange = () => { st.slink = $('#slink').value.trim(); save(); updLink(); };
-  function updLink(){ const l = (st.slink || '').trim() || LINK_DEFAULT; $('#lnkSheet').hidden = !l; if (l) $('#lnkSheet').href = l; }
+  function updLink(){ const l = (st.slink || '').trim() || LINK_DEFAULT; $('#lnkSheet').hidden = !l; if (l) { $('#lnkSheet').href = l; $('#lnkSheet2').href = l; } }
   $('#emps').value = st.emps; $('#emps').onchange = () => { st.emps = $('#emps').value; save(); renderSelects(); validateAndRender(); };
   $('#btnPolReset').onclick = () => { if (confirm('¿Volver a la política original?')) { st.pol = JSON.parse(JSON.stringify(POL0)); save(); renderPol(); renderSelects(); validateAndRender(); } };
   $('#btnBorrar').onclick = () => { if (confirm('Se borran los gastos de este navegador (la planilla de Google no se toca). ¿Seguir?')) { st.gastos = []; save(); renderBandeja(); renderPanel(); updBadge(); } };
@@ -735,8 +738,8 @@ Reglas: "total" es el importe final pagado, como número (usá punto decimal, la
   $('#btnTestDB').onclick = async () => {
     if (!sheetsURL()){ $('#outDB').textContent = 'Pegá primero la URL de la aplicación web.'; return; }
     $('#outDB').innerHTML = '<span class="spin dk"></span> Probando…';
-    try { const j = await sheet(); $('#outDB').textContent = `✓ Conectado: la planilla tiene ${j.rows.length} gastos`; setDot('#dotDB', true); sincronizar(true); }
-    catch { $('#outDB').textContent = '✕ No responde. Revisá que la URL termine en /exec y que el acceso sea "Cualquier persona".'; setDot('#dotDB', false); }
+    try { const j = await sheet(); $('#outDB').textContent = `✓ Conectada: la planilla tiene ${j.rows.length} ${j.rows.length === 1 ? 'gasto' : 'gastos'}`; setDot('#dotDB', true); sincronizar(true); }
+    catch { $('#outDB').textContent = '✕ La planilla no responde. Revisá tu conexión a internet y probá de nuevo.'; setDot('#dotDB', false); }
   };
 
   // ---------- Inicio ----------
@@ -746,7 +749,7 @@ Reglas: "total" es el importe final pagado, como número (usá punto decimal, la
   if (location.protocol.startsWith('http')) fetch('/api/status', {cache: 'no-store'}).then(r => r.ok ? r.json() : null).then(j => {
     if (!j) return;
     if (j.hasKey){ serverMode = true; $('#keyBox').hidden = true; $('#srvNote').textContent = 'La IA ya está conectada con la cuenta de Pollinations del sitio: cualquiera que abra este link puede leer recibos.'; setDot('#dotIA', true); }
-    if (j.hasSheets){ serverSheet = 'server'; $('#surl').closest('label').hidden = true; if (j.sheetLink && !st.slink){ st.slink = j.sheetLink; updLink(); } }
+    if (j.hasSheets){ serverSheet = 'server'; if (j.sheetLink && !st.slink){ st.slink = j.sheetLink; updLink(); } }
   }).catch(() => {}).finally(() => { if (sheetsURL()) sincronizar(true); });
 })();
 </script>
